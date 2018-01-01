@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "96587991199",
+    "firebase_url": "https://allowance-app-blanksketch.firebaseio.com",
+    "project_id": "allowance-app-blanksketch",
+    "storage_bucket": "allowance-app-blanksketch.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:96587991199:android:7ea77ce53f639257",
+        "android_client_info": {
+          "package_name": "com.example.shendul.allowanceapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "96587991199-tckpg6bvl3vqt731r8ovn702n9cvluee.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.shendul.allowanceapp",
+            "certificate_hash": "94b5248bf8431be783b9edc68b829183ba09a115"
+          }
+        },
+        {
+          "client_id": "96587991199-9dgqdcohg13imnuecjs88cdfaad8lcmc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDphtSopLi2bsDAbDaetSj8x_HM69RYT4g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "96587991199-9dgqdcohg13imnuecjs88cdfaad8lcmc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
