@@ -67,8 +67,7 @@ public class AllowanceActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                startCreateAllowanceActivity();
             }
         });
     }
@@ -157,6 +156,10 @@ public class AllowanceActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    private void startCreateAllowanceActivity() {
+        startActivity(new Intent(this, CreateAllowanceActivity.class));
     }
 
 }
