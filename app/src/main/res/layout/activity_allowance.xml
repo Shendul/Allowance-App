@@ -28,7 +28,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        app:backgroundTint="@color/colorAccent"
+        app:srcCompat="@drawable/ic_add_white_24dp" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"

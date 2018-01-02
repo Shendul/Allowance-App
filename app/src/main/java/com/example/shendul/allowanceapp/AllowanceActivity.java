@@ -131,12 +131,14 @@ public class AllowanceActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser account) {
         if (account != null) {
-            Log.e(TAG, "loggedIn with " + account.getDisplayName());
+            Log.d(TAG, "loggedIn with " + account.getDisplayName());
+            SignInButton signInButton = findViewById(R.id.sign_in_button);
+            signInButton.setVisibility(View.GONE);
         }
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.e(TAG, "firebaseAuthWihGoogle " + acct.getId());
+        Log.d(TAG, "firebaseAuthWihGoogle " + acct.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
@@ -144,11 +146,11 @@ public class AllowanceActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Log.e(TAG, "signInWithCredentials:success");
+                            Log.d(TAG, "signInWithCredentials:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
                         } else {
-                            Log.e(TAG, "signInWithCredentials:failed");
+                            Log.d(TAG, "signInWithCredentials:failed");
                             //Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed");
                             updateUI(null);
                         }
