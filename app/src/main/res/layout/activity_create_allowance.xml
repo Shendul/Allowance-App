@@ -46,5 +46,13 @@
         android:inputType="number"
         android:text="Amount" />
 
+    <Button
+        android:id="@+id/createAllowance_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create Allowance"
+        app:layout_anchor="@+id/include"
+        app:layout_anchorGravity="left|center" />
+
 
 </android.support.design.widget.CoordinatorLayout>
