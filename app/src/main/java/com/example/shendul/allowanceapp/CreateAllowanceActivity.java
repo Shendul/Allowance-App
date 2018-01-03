@@ -10,11 +10,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class CreateAllowanceActivity extends AppCompatActivity {
 
     private static final String TAG = "CreateAllowanceActivity";
     EditText mAllowanceName;
     EditText mAllowanceAmount;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,12 @@ public class CreateAllowanceActivity extends AppCompatActivity {
                 Log.d(TAG, mAllowanceName.getText().toString());
                 Log.d(TAG, mAllowanceAmount.getText().toString());
                 // create an allowance in the Firebase database
+
+                mDatabase = FirebaseDatabase.getInstance().getReference();
+                mDatabase.child("allowance").child(mAllowanceName.getText().toString()).setValue(mAllowanceAmount.getText().toString());
+
+
+
             }
         });
     }
