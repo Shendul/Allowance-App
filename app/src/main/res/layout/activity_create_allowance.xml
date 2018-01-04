@@ -42,9 +42,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="200dp"
+        android:layout_marginLeft="15dp"
         android:ems="10"
-        android:inputType="number"
-        android:text="Amount" />
+        android:inputType="number" />
 
     <Button
         android:id="@+id/createAllowance_button"
@@ -53,6 +53,15 @@
         android:text="Create Allowance"
         app:layout_anchor="@+id/include"
         app:layout_anchorGravity="left|center" />
+
+    <TextView
+        android:id="@+id/dollarSign"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="210dp"
+        android:layout_marginLeft="5dp"
+        android:text="$"
+        android:textAppearance="@android:style/TextAppearance.Medium" />
 
 
 </android.support.design.widget.CoordinatorLayout>

@@ -44,12 +44,18 @@ public class CreateAllowanceActivity extends AppCompatActivity {
                 // treat them as one user. Also if an allowance is created with the same name it will
                 // overwrite the previous one, this may not be so much a bug but a feature, depending
                 // on if we want that to be part of the design.
-                mDatabase.child(user).child("allowance")
-                        .child(mAllowanceName.getText().toString())
-                        .setValue(mAllowanceAmount.getText().toString());
 
+                // TODO: add some checking.
+                if (mAllowanceAmount.getText().toString().equals("")) {
+                    // show error message
+                } else {
+                    mDatabase.child(user).child("allowance")
+                            .child(mAllowanceName.getText().toString())
+                            .setValue(mAllowanceAmount.getText().toString());
 
-
+                    // once the allowance is created, exit the activity.
+                    finish();
+                }
             }
         });
     }
