@@ -159,7 +159,9 @@ public class AllowanceActivity extends AppCompatActivity {
     }
 
     private void startCreateAllowanceActivity() {
-        startActivity(new Intent(this, CreateAllowanceActivity.class));
+        Intent intent = new Intent(this, CreateAllowanceActivity.class);
+        intent.putExtra("USER_NAME", mAuth.getCurrentUser().getDisplayName());
+        startActivity(intent);
     }
 
 }

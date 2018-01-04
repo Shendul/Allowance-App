@@ -39,7 +39,14 @@ public class CreateAllowanceActivity extends AppCompatActivity {
                 // create an allowance in the Firebase database
 
                 mDatabase = FirebaseDatabase.getInstance().getReference();
-                mDatabase.child("allowance").child(mAllowanceName.getText().toString()).setValue(mAllowanceAmount.getText().toString());
+                String user = getIntent().getStringExtra("USER_NAME");
+                // TODO: there is a bug that if the google user has the same exact name it will infact
+                // treat them as one user. Also if an allowance is created with the same name it will
+                // overwrite the previous one, this may not be so much a bug but a feature, depending
+                // on if we want that to be part of the design.
+                mDatabase.child(user).child("allowance")
+                        .child(mAllowanceName.getText().toString())
+                        .setValue(mAllowanceAmount.getText().toString());
 
 
 
