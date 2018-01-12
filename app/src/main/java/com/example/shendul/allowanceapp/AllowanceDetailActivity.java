@@ -1,5 +1,6 @@
 package com.example.shendul.allowanceapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -82,10 +83,16 @@ public class AllowanceDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                startCreateTransactionActivity();
             }
         });
+    }
+
+    private void startCreateTransactionActivity() {
+        Intent intent = new Intent(this, CreateTransactionActivity.class);
+        intent.putExtra("USER_NAME", getIntent().getStringExtra("USER_NAME"));
+        intent.putExtra("ALLOWANCE_NAME",getIntent().getStringExtra("ALLOWANCE_NAME"));
+        startActivity(intent);
     }
 
 }
