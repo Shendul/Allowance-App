@@ -53,7 +53,13 @@ public class CreateAllowanceActivity extends AppCompatActivity {
                 } else {
                     mDatabase.child(user).child("allowance")
                             .child(mAllowanceName.getText().toString())
+                            .child("transactions")
+                            .child("0")
                             .setValue(mAllowanceAmount.getText().toString());
+                    mDatabase.child(user).child("allowance")
+                            .child(mAllowanceName.getText().toString())
+                            .child("nextTransID")
+                            .setValue("1");
 
                     // once the allowance is created, exit the activity.
                     finish();

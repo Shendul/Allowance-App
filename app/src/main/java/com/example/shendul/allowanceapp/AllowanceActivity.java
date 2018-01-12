@@ -160,9 +160,10 @@ public class AllowanceActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> adapter, View view, int position, long arg3) {
                     String value = (String) adapter.getItemAtPosition(position);
                     Log.e(TAG, "Clicked" + value);
+                    startAllowanceDetailActivity(value);
+
                 }
             });
-            // TODO: check if there is any data in the database first..
 
             // Read from the database
             userRef.addValueEventListener(new ValueEventListener() {
@@ -221,6 +222,13 @@ public class AllowanceActivity extends AppCompatActivity {
     private void startCreateAllowanceActivity() {
         Intent intent = new Intent(this, CreateAllowanceActivity.class);
         intent.putExtra("USER_NAME", mAuth.getCurrentUser().getDisplayName());
+        startActivity(intent);
+    }
+
+    private void startAllowanceDetailActivity(String allowance_name) {
+        Intent intent = new Intent(this, AllowanceDetailActivity.class);
+        intent.putExtra("USER_NAME", mAuth.getCurrentUser().getDisplayName());
+        intent.putExtra("ALLOWANCE_NAME", allowance_name);
         startActivity(intent);
     }
 

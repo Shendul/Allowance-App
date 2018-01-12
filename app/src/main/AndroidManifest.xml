@@ -22,6 +22,10 @@
         <activity
             android:name=".CreateAllowanceActivity"
             android:label="@string/title_activity_create_allowance"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AllowanceDetailActivity"
+            android:label="@string/title_activity_allowance_detail"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

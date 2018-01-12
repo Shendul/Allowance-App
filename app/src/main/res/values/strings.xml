@@ -2,4 +2,5 @@
     <string name="app_name">Allowance App</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_create_allowance">CreateAllowanceActivity</string>
+    <string name="title_activity_allowance_detail">AllowanceDetailActivity</string>
 </resources>
