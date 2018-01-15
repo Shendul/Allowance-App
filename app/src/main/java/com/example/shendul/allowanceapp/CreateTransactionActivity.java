@@ -35,10 +35,11 @@ public class CreateTransactionActivity extends AppCompatActivity {
 
         final String user = getIntent().getStringExtra("USER_NAME");
         final String allowance = getIntent().getStringExtra("ALLOWANCE_NAME");
+        final String allowanceID = getIntent().getStringExtra("ALLOWANCE_ID");
 
         // grab all transactions from firebase and get their sum.
         DatabaseReference transRef = FirebaseDatabase.getInstance()
-                .getReference(user + "/allowance/" + allowance + "/nextTransID");
+                .getReference("allowances/" + allowanceID + "/nextTransID");
 
         // Read from the database
         transRef.addValueEventListener(new ValueEventListener() {
@@ -77,15 +78,21 @@ public class CreateTransactionActivity extends AppCompatActivity {
                 if (mTransactionAmount.getText().toString().equals("") || mTransID.isEmpty()) {
                     // show error message to user
                 } else {
-                    mDatabase.child(user).child("allowance")
-                            .child(allowance)
+                    mDatabase.child("allowances")
+                            .child(allowanceID)
                             .child("transactions")
                             .child(mTransID)
+                            .child("amount")
                             .setValue(mTransactionAmount.getText().toString());
-                    // TODO: increment the transID in database.
-                    mTransID = "" + (Integer.parseInt(mTransID) + 1);
-                    mDatabase.child(user).child("allowance")
-                            .child(allowance)
+                    mDatabase.child("allowances")
+                            .child(allowanceID)
+                            .child("transactions")
+                            .child(mTransID)
+                            .child("desc")
+                            .setValue(""); //TODO: implement this feature.
+                    mTransID = "k" + (Integer.parseInt(mTransID.substring(1)) + 1);
+                    mDatabase.child("allowances")
+                            .child(allowanceID)
                             .child("nextTransID")
                             .setValue(mTransID);
 

@@ -27,6 +27,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
     TextView mAllowanceName;
     TextView mAllowanceBalance;
     private DatabaseReference mDatabase;
+    ArrayList<String> transArray = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +42,13 @@ public class AllowanceDetailActivity extends AppCompatActivity {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         mDatabase = database.getReference();
         String user = getIntent().getStringExtra("USER_NAME");
-        String allowance = getIntent().getStringExtra("ALLOWANCE_NAME");
-        mAllowanceName.setText(allowance);
+        String allowanceName = getIntent().getStringExtra("ALLOWANCE_NAME");
+        String allowanceID =  getIntent().getStringExtra("ALLOWANCE_ID");
+        mAllowanceName.setText(allowanceName);
 
         // grab all transactions from firebase and get their sum.
-        DatabaseReference transRef = database.getReference(user + "/allowance/" +
-                allowance + "/transactions");
+        DatabaseReference transRef = database.getReference("allowances/" +
+                allowanceID + "/transactions");
         // Read from the database
         transRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -54,18 +56,27 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 int sum = 0;
-                ArrayList<String> value = (ArrayList<String>) dataSnapshot.getValue();
-                if (value == null){
+                HashMap<String, String> value = (HashMap<String, String>) dataSnapshot.getValue();
+                transArray.clear();
+                if (value == null) {
                     //TODO: display message.
-                    Log.e(TAG, "no transactions found");
+                    Log.e(TAG, "Database is empty");
                     return;
                 }
-                for (int i = 0; i < value.size(); i++) {
-                    Log.d(TAG, "Value.get(i) is: " + value.get(i));
-                    int transValue = Integer.parseInt(value.get(i));
-                    sum += transValue;
-                }
+                transArray.addAll(value.keySet());
                 Log.d(TAG, "Value is: " + value);
+                for (int i = 0; i <  transArray.size(); i++) {
+                    Log.d(TAG, "array[i] is: " +   transArray.get(i));
+                    String transAmount = (String) dataSnapshot
+                            .child( transArray.get(i) + "/amount").getValue();
+                    Log.d(TAG, "Transaction amount is: " +  transAmount);
+                    if ( transAmount == null) {
+                        //TODO: display message.
+                        Log.e(TAG, "Database is empty");
+                        return;
+                    }
+                    sum += Integer.parseInt(transAmount);
+                }
                 Log.d(TAG, "Sum is: " + sum);
                 mAllowanceBalance.setText("$" + sum);
             }
@@ -92,6 +103,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
         Intent intent = new Intent(this, CreateTransactionActivity.class);
         intent.putExtra("USER_NAME", getIntent().getStringExtra("USER_NAME"));
         intent.putExtra("ALLOWANCE_NAME",getIntent().getStringExtra("ALLOWANCE_NAME"));
+        intent.putExtra("ALLOWANCE_ID",getIntent().getStringExtra("ALLOWANCE_ID"));
         startActivity(intent);
     }
 

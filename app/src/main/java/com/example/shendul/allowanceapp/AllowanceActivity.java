@@ -46,6 +46,7 @@ public class AllowanceActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
     private static final String TAG = "AllowanceActivity";
 
+    ArrayList<String> userAllowanceArray = new ArrayList<String>();
     ArrayList<String> allowanceArray = new ArrayList<String>();
 
     @Override
@@ -148,7 +149,8 @@ public class AllowanceActivity extends AppCompatActivity {
 
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
             String userName = mAuth.getCurrentUser().getDisplayName();
-            DatabaseReference userRef = database.getReference(userName + "/allowance");
+            DatabaseReference userRef = database.getReference(userName + "/allowances");
+            DatabaseReference allowanceRef = database.getReference("allowances");
 
             final ArrayAdapter adapter = new ArrayAdapter<String>(this,
                     R.layout.allowance_listview, allowanceArray);
@@ -160,7 +162,7 @@ public class AllowanceActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> adapter, View view, int position, long arg3) {
                     String value = (String) adapter.getItemAtPosition(position);
                     Log.e(TAG, "Clicked" + value);
-                    startAllowanceDetailActivity(value);
+                    startAllowanceDetailActivity(value, position);
 
                 }
             });
@@ -169,18 +171,48 @@ public class AllowanceActivity extends AppCompatActivity {
             userRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    // This method is called once with the initial value and again
-                    // whenever data at this location is updated.
                     HashMap<String, String> value = (HashMap<String, String>) dataSnapshot.getValue();
-                    allowanceArray.clear();
-                    if (value == null){
+                    userAllowanceArray.clear();
+                    if (value == null) {
                         //TODO: display message.
                         Log.e(TAG, "Database is empty");
                         return;
                     }
-                    allowanceArray.addAll(value.keySet());
-                    adapter.notifyDataSetChanged();
+                    userAllowanceArray.addAll(value.keySet());
                     Log.d(TAG, "Value is: " + value);
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
+                    Log.w(TAG, "Failed to read value.", error.toException());
+                }
+            });
+
+            // Read from the database
+            allowanceRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    allowanceArray.clear();
+                    for (int i = 0; i < userAllowanceArray.size(); i++) {
+                        Log.d(TAG, "array[i] is: " +  userAllowanceArray.get(i));
+                        String allowName = (String) dataSnapshot
+                                .child(userAllowanceArray.get(i) + "/name").getValue();
+                        Log.d(TAG, "Allowance name is: " + allowName);
+                        if (allowName == null) {
+                            //TODO: display message.
+                            Log.e(TAG, "Database is empty");
+                            return;
+                        }
+                        allowanceArray.add(allowName);
+
+
+                    }
+                    adapter.notifyDataSetChanged();
+                    Log.d(TAG, "Allowance is: " + allowanceArray);
+
+
                 }
 
                 @Override
@@ -211,7 +243,6 @@ public class AllowanceActivity extends AppCompatActivity {
                             updateUI(user);
                         } else {
                             Log.d(TAG, "signInWithCredentials:failed");
-                            //Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed");
                             updateUI(null);
                         }
 
@@ -225,10 +256,12 @@ public class AllowanceActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void startAllowanceDetailActivity(String allowance_name) {
+    private void startAllowanceDetailActivity(String allowance_name, int position) {
         Intent intent = new Intent(this, AllowanceDetailActivity.class);
         intent.putExtra("USER_NAME", mAuth.getCurrentUser().getDisplayName());
         intent.putExtra("ALLOWANCE_NAME", allowance_name);
+        String allowance_id = "" + userAllowanceArray.get(position);
+        intent.putExtra("ALLOWANCE_ID", allowance_id);
         startActivity(intent);
     }
 

@@ -10,8 +10,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
 
 public class CreateAllowanceActivity extends AppCompatActivity {
 
@@ -19,6 +24,7 @@ public class CreateAllowanceActivity extends AppCompatActivity {
     EditText mAllowanceName;
     EditText mAllowanceAmount;
     private DatabaseReference mDatabase;
+    String allowID = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +35,33 @@ public class CreateAllowanceActivity extends AppCompatActivity {
 
         mAllowanceName = (EditText)findViewById(R.id.nameText);
         mAllowanceAmount = (EditText)findViewById(R.id.amountText);
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference allowIDRef = database.getReference("allowances/nextAllowID");
+
+
+        // Read from the database
+        allowIDRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                allowID = (String) dataSnapshot.getValue();
+                Log.d(TAG, "AllowID is: " + allowID);
+                if (allowID == null) {
+                    //TODO: display message.
+                    Log.e(TAG, "Database is empty");
+                    return;
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
 
         findViewById(R.id.createAllowance_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,15 +84,37 @@ public class CreateAllowanceActivity extends AppCompatActivity {
                 } else if (mAllowanceName.getText().toString().equals("Name")) {
                     // show error message to user
                 } else {
-                    mDatabase.child(user).child("allowance")
-                            .child(mAllowanceName.getText().toString())
+                    String zero = "k0";
+                    // give user allowance id
+                    mDatabase.child(user)
+                            .child("allowances")
+                            .child(allowID)
+                            .setValue("");
+                    // create name of allowance
+                    mDatabase.child("allowances").child(allowID)
+                            .child("name")
+                            .setValue(mAllowanceName.getText().toString());
+                    // create first transaction of allowance
+                    mDatabase.child("allowances").child(allowID)
                             .child("transactions")
-                            .child("0")
+                            .child(zero)
+                            .child("amount")
                             .setValue(mAllowanceAmount.getText().toString());
-                    mDatabase.child(user).child("allowance")
-                            .child(mAllowanceName.getText().toString())
+                    mDatabase.child("allowances").child(allowID)
+                            .child("transactions")
+                            .child(zero)
+                            .child("desc")
+                            .setValue(""); // TODO: implement this feature.
+                    // create trans id tracker
+                    mDatabase.child("allowances").child(allowID)
                             .child("nextTransID")
-                            .setValue("1");
+                            .setValue("k1");
+
+                    // increment allowID
+                    allowID = "k" + (Integer.parseInt(allowID.substring(1)) + 1);
+                    mDatabase.child("allowances")
+                            .child("nextAllowID")
+                            .setValue(allowID);
 
                     // once the allowance is created, exit the activity.
                     finish();
