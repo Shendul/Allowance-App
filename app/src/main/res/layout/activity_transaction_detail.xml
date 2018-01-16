@@ -4,14 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.shendul.allowanceapp.AllowanceDetailActivity">
-
-    <ListView
-        android:id="@+id/transactions_list"
-        android:layout_width="match_parent"
-        android:layout_height="270dp"
-        android:layout_marginTop="290dp"
-        tools:layout_editor_absoluteY="152dp" />
+    tools:context="com.example.shendul.allowanceapp.TransactionDetailActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -31,17 +24,9 @@
         android:id="@+id/include2"
         layout="@layout/content_allowance_detail" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_add_white_24dp" />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="241dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="65dp"
         android:orientation="vertical"
         app:layout_anchor="@+id/include2"
@@ -49,10 +34,10 @@
         tools:layout_editor_absoluteY="50dp">
 
         <TextView
-            android:id="@+id/allowance_name"
+            android:id="@+id/transaction_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Name"
+            android:text="Desc"
             android:textAlignment="center"
             android:textSize="30sp"
             app:layout_anchor="@+id/include2"
@@ -62,13 +47,13 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="15dp" />
+            android:layout_height="49dp" />
 
         <TextView
-            android:id="@+id/allowance_balance"
+            android:id="@+id/transaction_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Balance"
+            android:text="Amount"
             android:textAlignment="center"
             android:textSize="30sp"
             app:layout_anchor="@+id/include2"
@@ -76,21 +61,13 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="41dp" />
+            android:layout_height="134dp" />
 
         <Button
             android:id="@+id/button2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Share Allowance" />
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Transactions:"
-            android:textAlignment="center"
-            android:textSize="24sp" />
+            android:text="Edit" />
 
     </LinearLayout>
 

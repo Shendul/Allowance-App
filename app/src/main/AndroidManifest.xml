@@ -30,6 +30,10 @@
         <activity
             android:name=".CreateTransactionActivity"
             android:label="@string/title_activity_create_transaction"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".TransactionDetailActivity"
+            android:label="@string/title_activity_transaction_detail"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

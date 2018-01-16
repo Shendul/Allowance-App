@@ -69,11 +69,11 @@ public class CreateTransactionActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d(TAG, "Clicked Create Transaction button");
                 Log.d(TAG, mTransactionAmount.getText().toString());
-                // create an allowance in the Firebase database
+                // create a transaction in the Firebase database
 
                 mDatabase = FirebaseDatabase.getInstance().getReference();
 
-
+                //TODO: maybe add in which user created the transaction since sharing is now allowed.
 
                 if (mTransactionAmount.getText().toString().equals("") || mTransID.isEmpty()) {
                     // show error message to user

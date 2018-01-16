@@ -8,6 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -20,6 +23,9 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+// TODO: BUG_LIST:
+// 1. When new transactions are added this screen does not update without a refresh.
 
 public class AllowanceDetailActivity extends AppCompatActivity {
 
@@ -45,6 +51,20 @@ public class AllowanceDetailActivity extends AppCompatActivity {
         String allowanceName = getIntent().getStringExtra("ALLOWANCE_NAME");
         String allowanceID =  getIntent().getStringExtra("ALLOWANCE_ID");
         mAllowanceName.setText(allowanceName);
+
+        final ArrayAdapter adapter = new ArrayAdapter<String>(this,
+                R.layout.allowance_listview, transArray);
+        ListView listView = (ListView) findViewById(R.id.transactions_list);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View view, int position, long arg3) {
+                String id = (String) adapter.getItemAtPosition(position);
+                Log.e(TAG, "Clicked " + id);
+                startTransactionDetailActivity(id);
+
+            }
+        });
 
         // grab all transactions from firebase and get their sum.
         DatabaseReference transRef = database.getReference("allowances/" +
@@ -103,6 +123,14 @@ public class AllowanceDetailActivity extends AppCompatActivity {
         Intent intent = new Intent(this, CreateTransactionActivity.class);
         intent.putExtra("USER_NAME", getIntent().getStringExtra("USER_NAME"));
         intent.putExtra("ALLOWANCE_NAME",getIntent().getStringExtra("ALLOWANCE_NAME"));
+        intent.putExtra("ALLOWANCE_ID",getIntent().getStringExtra("ALLOWANCE_ID"));
+        startActivity(intent);
+    }
+
+    private void startTransactionDetailActivity(String transactionID) {
+        Log.e(TAG, "transID before switching activity is " + transactionID);
+        Intent intent = new Intent(this, TransactionDetailActivity.class);
+        intent.putExtra("TRANSACTION_ID",transactionID);
         intent.putExtra("ALLOWANCE_ID",getIntent().getStringExtra("ALLOWANCE_ID"));
         startActivity(intent);
     }
