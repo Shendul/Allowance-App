@@ -79,7 +79,7 @@
             android:layout_height="41dp" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/share_allowance_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Share Allowance" />

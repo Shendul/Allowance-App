@@ -34,6 +34,10 @@
         <activity
             android:name=".TransactionDetailActivity"
             android:label="@string/title_activity_transaction_detail"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ShareAllowanceActivity"
+            android:label="@string/title_activity_share_allowance"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

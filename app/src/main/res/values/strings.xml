@@ -5,4 +5,5 @@
     <string name="title_activity_allowance_detail">AllowanceDetailActivity</string>
     <string name="title_activity_create_transaction">CreateTransactionActivity</string>
     <string name="title_activity_transaction_detail">TransactionDetailActivity</string>
+    <string name="title_activity_share_allowance">ShareAllowanceActivity</string>
 </resources>

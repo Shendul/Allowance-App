@@ -117,6 +117,15 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                 startCreateTransactionActivity();
             }
         });
+
+        findViewById(R.id.share_allowance_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "Clicked Share Allowance button for " + mAllowanceName
+                        .getText().toString());
+                startShareAllowanceActivity();
+            }
+        });
     }
 
     private void startCreateTransactionActivity() {
@@ -128,9 +137,14 @@ public class AllowanceDetailActivity extends AppCompatActivity {
     }
 
     private void startTransactionDetailActivity(String transactionID) {
-        Log.e(TAG, "transID before switching activity is " + transactionID);
         Intent intent = new Intent(this, TransactionDetailActivity.class);
         intent.putExtra("TRANSACTION_ID",transactionID);
+        intent.putExtra("ALLOWANCE_ID",getIntent().getStringExtra("ALLOWANCE_ID"));
+        startActivity(intent);
+    }
+
+    private void startShareAllowanceActivity() {
+        Intent intent = new Intent(this, ShareAllowanceActivity.class);
         intent.putExtra("ALLOWANCE_ID",getIntent().getStringExtra("ALLOWANCE_ID"));
         startActivity(intent);
     }
