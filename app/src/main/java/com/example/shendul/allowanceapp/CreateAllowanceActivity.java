@@ -77,8 +77,7 @@ public class CreateAllowanceActivity extends AppCompatActivity {
                 // treat them as one user. Also if an allowance is created with the same name it will
                 // overwrite the previous one, this may not be so much a bug but a feature, depending
                 // on if we want that to be part of the design.
-
-                // TODO: add some checking.
+                
                 if (mAllowanceAmount.getText().toString().equals("")) {
                     // show error message to user
                 } else if (mAllowanceName.getText().toString().equals("Name")) {
@@ -104,7 +103,7 @@ public class CreateAllowanceActivity extends AppCompatActivity {
                             .child("transactions")
                             .child(zero)
                             .child("desc")
-                            .setValue(""); // TODO: implement this feature.
+                            .setValue("Allowance Budget: Goal"); // default 1st transaction
                     // create trans id tracker
                     mDatabase.child("allowances").child(allowID)
                             .child("nextTransID")

@@ -34,6 +34,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
     TextView mAllowanceBalance;
     private DatabaseReference mDatabase;
     ArrayList<String> transArray = new ArrayList<String>();
+    ArrayList<String> transDescArray = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +54,13 @@ public class AllowanceDetailActivity extends AppCompatActivity {
         mAllowanceName.setText(allowanceName);
 
         final ArrayAdapter adapter = new ArrayAdapter<String>(this,
-                R.layout.allowance_listview, transArray);
+                R.layout.allowance_listview, transDescArray);
         ListView listView = (ListView) findViewById(R.id.transactions_list);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg3) {
-                String id = (String) adapter.getItemAtPosition(position);
+                String id = transArray.get(position);
                 Log.e(TAG, "Clicked " + id);
                 startTransactionDetailActivity(id);
 
@@ -77,6 +78,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                 // whenever data at this location is updated.
                 int sum = 0;
                 HashMap<String, String> value = (HashMap<String, String>) dataSnapshot.getValue();
+                transDescArray.clear();
                 transArray.clear();
                 if (value == null) {
                     //TODO: display message.
@@ -86,15 +88,18 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                 transArray.addAll(value.keySet());
                 Log.d(TAG, "Value is: " + value);
                 for (int i = 0; i <  transArray.size(); i++) {
-                    Log.d(TAG, "array[i] is: " +   transArray.get(i));
+                    String transDesc = (String) dataSnapshot
+                            .child(transArray.get(i) + "/desc").getValue();
                     String transAmount = (String) dataSnapshot
                             .child( transArray.get(i) + "/amount").getValue();
                     Log.d(TAG, "Transaction amount is: " +  transAmount);
-                    if ( transAmount == null) {
+                    Log.d(TAG, "Transaction desc is: " +  transDesc);
+                    if ( transAmount == null || transDesc == null) {
                         //TODO: display message.
                         Log.e(TAG, "Database is empty");
                         return;
                     }
+                    transDescArray.add(transDesc);
                     sum += Integer.parseInt(transAmount);
                 }
                 Log.d(TAG, "Sum is: " + sum);

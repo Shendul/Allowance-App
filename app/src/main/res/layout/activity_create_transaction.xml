@@ -27,6 +27,16 @@
         tools:layout_editor_absoluteY="59dp" />
 
     <EditText
+        android:id="@+id/descText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="130dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Description of Transaction"
+        android:textAlignment="center" />
+
+    <EditText
         android:id="@+id/amountText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

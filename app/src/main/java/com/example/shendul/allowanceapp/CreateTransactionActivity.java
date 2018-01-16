@@ -21,6 +21,7 @@ public class CreateTransactionActivity extends AppCompatActivity {
 
     private static final String TAG = "CreateTransActivity";
     EditText mTransactionAmount;
+    EditText mDescription;
     private DatabaseReference mDatabase;
     String mTransID = "";
 
@@ -32,6 +33,7 @@ public class CreateTransactionActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mTransactionAmount = (EditText)findViewById(R.id.amountText);
+        mDescription = (EditText)findViewById(R.id.descText);
 
         final String user = getIntent().getStringExtra("USER_NAME");
         final String allowance = getIntent().getStringExtra("ALLOWANCE_NAME");
@@ -68,15 +70,20 @@ public class CreateTransactionActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "Clicked Create Transaction button");
-                Log.d(TAG, mTransactionAmount.getText().toString());
+                Log.d(TAG, "Amount = " + mTransactionAmount.getText().toString());
+                Log.d(TAG, "Description is: " + mDescription.getText().toString());
+
                 // create a transaction in the Firebase database
 
                 mDatabase = FirebaseDatabase.getInstance().getReference();
+                String desc = mDescription.getText().toString();
 
                 //TODO: maybe add in which user created the transaction since sharing is now allowed.
 
                 if (mTransactionAmount.getText().toString().equals("") || mTransID.isEmpty()) {
                     // show error message to user
+                } else if (desc.equals("") || desc.equals("Description of Transaction")) {
+                    // display an error message.
                 } else {
                     mDatabase.child("allowances")
                             .child(allowanceID)
@@ -89,7 +96,7 @@ public class CreateTransactionActivity extends AppCompatActivity {
                             .child("transactions")
                             .child(mTransID)
                             .child("desc")
-                            .setValue(""); //TODO: implement this feature.
+                            .setValue(desc);
                     mTransID = "k" + (Integer.parseInt(mTransID.substring(1)) + 1);
                     mDatabase.child("allowances")
                             .child(allowanceID)
