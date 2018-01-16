@@ -33,7 +33,7 @@
         app:layout_anchorGravity="left|top"
         tools:layout_editor_absoluteY="50dp">
 
-        <TextView
+        <EditText
             android:id="@+id/transaction_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -49,10 +49,11 @@
             android:layout_width="match_parent"
             android:layout_height="49dp" />
 
-        <TextView
+        <EditText
             android:id="@+id/transaction_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="numberSigned"
             android:text="Amount"
             android:textAlignment="center"
             android:textSize="30sp"
@@ -61,10 +62,10 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="134dp" />
+            android:layout_height="56dp" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/edit_trans_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Edit" />

@@ -3,7 +3,6 @@ package com.example.shendul.allowanceapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -19,13 +18,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
 // TODO: BUG_LIST:
 // 1. When new transactions are added this screen does not update without a refresh.
+// 2. First time clicking an allowance seems to not populate the transaction list.
 
 public class AllowanceDetailActivity extends AppCompatActivity {
 
