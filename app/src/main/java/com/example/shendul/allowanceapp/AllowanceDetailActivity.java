@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 // TODO: BUG_LIST:
-// 1. When new transactions are added this screen does not update without a refresh.
-// 2. First time clicking an allowance seems to not populate the transaction list.
+// 1. When transactions are edited this screen does not always update without a refresh.
+// 2. First time clicking an allowance seems to not populate the transaction list. #POSSIBLY SQUASHED, REQ MORE TESTING
 
 public class AllowanceDetailActivity extends AppCompatActivity {
 
@@ -33,6 +33,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     ArrayList<String> transArray = new ArrayList<String>();
     ArrayList<String> transDescArray = new ArrayList<String>();
+    ArrayAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +52,8 @@ public class AllowanceDetailActivity extends AppCompatActivity {
         String allowanceID =  getIntent().getStringExtra("ALLOWANCE_ID");
         mAllowanceName.setText(allowanceName);
 
-        final ArrayAdapter adapter = new ArrayAdapter<String>(this,
+
+        adapter = new ArrayAdapter<String>(this,
                 R.layout.allowance_listview, transDescArray);
         ListView listView = (ListView) findViewById(R.id.transactions_list);
         listView.setAdapter(adapter);
@@ -131,6 +133,12 @@ public class AllowanceDetailActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
+
     private void startCreateTransactionActivity() {
         Intent intent = new Intent(this, CreateTransactionActivity.class);
         intent.putExtra("USER_NAME", getIntent().getStringExtra("USER_NAME"));
@@ -141,6 +149,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
 
     private void startTransactionDetailActivity(String transactionID) {
         Intent intent = new Intent(this, TransactionDetailActivity.class);
+        intent.putExtra("USER_NAME", getIntent().getStringExtra("USER_NAME"));
         intent.putExtra("TRANSACTION_ID",transactionID);
         intent.putExtra("ALLOWANCE_ID",getIntent().getStringExtra("ALLOWANCE_ID"));
         startActivity(intent);

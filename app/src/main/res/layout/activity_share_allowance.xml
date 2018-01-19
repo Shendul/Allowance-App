@@ -28,8 +28,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="150dp"
         android:ems="10"
+        android:hint="User to be added to this allowance"
         android:inputType="textPersonName"
-        android:text="User to be added to this allowance"
         android:textAlignment="center" />
 
     <Button

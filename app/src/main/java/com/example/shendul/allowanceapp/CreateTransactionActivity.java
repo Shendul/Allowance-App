@@ -32,7 +32,6 @@ public class CreateTransactionActivity extends AppCompatActivity {
         mDescription = (EditText)findViewById(R.id.descText);
 
         final String user = getIntent().getStringExtra("USER_NAME");
-        final String allowance = getIntent().getStringExtra("ALLOWANCE_NAME");
         final String allowanceID = getIntent().getStringExtra("ALLOWANCE_ID");
 
         // grab all transactions from firebase and get their sum.
@@ -78,9 +77,40 @@ public class CreateTransactionActivity extends AppCompatActivity {
 
                 if (mTransactionAmount.getText().toString().equals("") || mTransID.isEmpty()) {
                     // show error message to user
-                } else if (desc.equals("") || desc.equals("Description of Transaction")) {
-                    // display an error message.
+                } else if (desc.equals("")) {
+                    mDatabase.child("allowances")
+                            .child(allowanceID)
+                            .child("transactions")
+                            .child(mTransID)
+                            .child("createdBy")
+                            .setValue(user);
+                    mDatabase.child("allowances")
+                            .child(allowanceID)
+                            .child("transactions")
+                            .child(mTransID)
+                            .child("amount")
+                            .setValue(mTransactionAmount.getText().toString());
+                    mDatabase.child("allowances")
+                            .child(allowanceID)
+                            .child("transactions")
+                            .child(mTransID)
+                            .child("desc")
+                            .setValue("Transaction: " + mTransID);
+                    mTransID = "k" + (Integer.parseInt(mTransID.substring(1)) + 1);
+                    mDatabase.child("allowances")
+                            .child(allowanceID)
+                            .child("nextTransID")
+                            .setValue(mTransID);
+
+                    // once the allowance is created, exit the activity.
+                    finish();
                 } else {
+                    mDatabase.child("allowances")
+                            .child(allowanceID)
+                            .child("transactions")
+                            .child(mTransID)
+                            .child("createdBy")
+                            .setValue(user);
                     mDatabase.child("allowances")
                             .child(allowanceID)
                             .child("transactions")

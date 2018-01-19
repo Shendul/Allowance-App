@@ -32,8 +32,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="130dp"
         android:ems="10"
+        android:hint="Description of Transaction"
         android:inputType="textPersonName"
-        android:text="Description of Transaction"
         android:textAlignment="center" />
 
     <EditText

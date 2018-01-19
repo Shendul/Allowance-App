@@ -70,6 +70,36 @@
             android:layout_height="wrap_content"
             android:text="Edit" />
 
+        <Button
+            android:id="@+id/delete_trans_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete Transaction" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="100dp" />
+
+        <TextView
+            android:id="@+id/created_by"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="Created By: "
+            android:textSize="18sp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="14dp" />
+
+        <TextView
+            android:id="@+id/edited_by"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="Last Edited By: "
+            android:textSize="18sp" />
+
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

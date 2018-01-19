@@ -37,6 +37,26 @@ public class ShareAllowanceActivity extends AppCompatActivity {
 
         final String allowanceID = getIntent().getStringExtra("ALLOWANCE_ID");
 
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        mDatabase = database.getReference();
+
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                users = (HashMap<String, String>) dataSnapshot.getValue();
+                Log.d(TAG, "Users is " + users);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+
         findViewById(R.id.add_user_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,28 +64,8 @@ public class ShareAllowanceActivity extends AppCompatActivity {
                 final String user = mNewUserName.getText().toString();
                 Log.d(TAG, "User is " + user);
 
-                mDatabase = FirebaseDatabase.getInstance().getReference();
-
-
-                mDatabase.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        // This method is called once with the initial value and again
-                        // whenever data at this location is updated.
-                        users = (HashMap<String, String>) dataSnapshot.getValue();
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        // Failed to read value
-                        Log.w(TAG, "Failed to read value.", error.toException());
-                    }
-                });
-
-                if (user.equals("")) {
-                    // show error message to user
-                } else if (user.equals("User to be added to this allowance")) {
+                //Log.d(TAG, "Users is " + users);
+                if (user.equals("") && users.isEmpty()) {
                     // show error message to user
                 } else if (users.containsKey(user) && !user.equals("allowances")) {
 

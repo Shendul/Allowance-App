@@ -75,8 +75,6 @@ public class CreateAllowanceActivity extends AppCompatActivity {
                 
                 if (mAllowanceAmount.getText().toString().equals("")) {
                     // show error message to user
-                } else if (mAllowanceName.getText().toString().equals("Name")) {
-                    // show error message to user
                 } else {
                     String zero = "k0";
                     // give user allowance id
