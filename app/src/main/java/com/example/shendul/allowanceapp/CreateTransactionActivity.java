@@ -73,8 +73,6 @@ public class CreateTransactionActivity extends AppCompatActivity {
                 mDatabase = FirebaseDatabase.getInstance().getReference();
                 String desc = mDescription.getText().toString();
 
-                //TODO: maybe add in which user created the transaction since sharing is now allowed.
-
                 if (mTransactionAmount.getText().toString().equals("") || mTransID.isEmpty()) {
                     // show error message to user
                 } else if (desc.equals("")) {

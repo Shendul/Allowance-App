@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -14,14 +15,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ShareAllowanceActivity extends AppCompatActivity {
 
     private static final String TAG = "ShareAllowanceActivity";
     EditText mNewUserName;
+    TextView mSharedUsers;
     private DatabaseReference mDatabase;
     HashMap<String, String> users;
+    ArrayList<String> sharedArray = new ArrayList<String>();
 
 
     @Override
@@ -31,13 +35,51 @@ public class ShareAllowanceActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //TODO: add a list of all users who are associated with this allowance.
-
         mNewUserName = (EditText)findViewById(R.id.new_user);
+        mSharedUsers = (TextView)findViewById(R.id.users_shared_with);
 
         final String allowanceID = getIntent().getStringExtra("ALLOWANCE_ID");
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference transRef = database.getReference("allowances/" +
+                allowanceID + "/users");
+        // Read from the database
+        transRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                HashMap<String, String> value = (HashMap<String, String>) dataSnapshot.getValue();
+                sharedArray.clear();
+                if (value == null) {
+                    //TODO: display message.
+                    Log.e(TAG, "Database is empty");
+                    return;
+                }
+                sharedArray.addAll(value.keySet());
+                Log.d(TAG, "Value is: " + value);
+                if (sharedArray != null) {
+                    String sharedUsers = "";
+                    for (int i = 0 ; i < sharedArray.size(); i++) {
+                        if (i == sharedArray.size() - 1)
+                            sharedUsers += sharedArray.get(i);
+                        else
+                            sharedUsers += sharedArray.get(i) + ", ";
+                        Log.d(TAG, "SharedUsers is: " + sharedUsers);
+                    }
+                    mSharedUsers.setText(sharedUsers);
+                } else {
+                    // empty or error.
+                    mSharedUsers.setText("");
+                    Log.d(TAG, "SharedUsers is: Empty.");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+
         mDatabase = database.getReference();
 
         mDatabase.addValueEventListener(new ValueEventListener() {
@@ -72,6 +114,11 @@ public class ShareAllowanceActivity extends AppCompatActivity {
                     mDatabase.child(user)
                             .child("allowances")
                             .child(allowanceID)
+                            .setValue("");
+                    mDatabase.child("allowances")
+                            .child(allowanceID)
+                            .child("users")
+                            .child(user)
                             .setValue("");
 
                     // once the allowance is shared, exit the activity.

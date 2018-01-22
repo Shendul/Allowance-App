@@ -87,6 +87,12 @@ public class CreateAllowanceActivity extends AppCompatActivity {
                             .child("name")
                             .setValue(mAllowanceName.getText().toString());
                     // create first transaction of allowance
+                    mDatabase.child("allowances")
+                            .child(allowID)
+                            .child("transactions")
+                            .child(zero)
+                            .child("createdBy")
+                            .setValue(user);
                     mDatabase.child("allowances").child(allowID)
                             .child("transactions")
                             .child(zero)

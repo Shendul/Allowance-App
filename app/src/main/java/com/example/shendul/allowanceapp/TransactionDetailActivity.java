@@ -62,7 +62,7 @@ public class TransactionDetailActivity extends AppCompatActivity {
                 Log.d(TAG, "Description is: " + desc);
                 Log.d(TAG, "Created by: " + createdBy);
                 Log.d(TAG, "Last edited by: " + lastEditedBy);
-                mTransactionAmount.setText("$" + amount);
+                mTransactionAmount.setText(amount);
                 mTransactionDesc.setText(desc);
                 if (createdBy != null)
                     mTransactionCreatedBy.setText("Created by: " + createdBy);
@@ -104,7 +104,7 @@ public class TransactionDetailActivity extends AppCompatActivity {
 
                 mDatabase = FirebaseDatabase.getInstance().getReference();
                 String desc = mTransactionDesc.getText().toString();
-                String amount = mTransactionAmount.getText().toString().substring(1);
+                String amount = mTransactionAmount.getText().toString();
 
                 if (amount.equals("")) {
                     // show error message to user

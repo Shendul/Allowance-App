@@ -24,6 +24,16 @@
         android:id="@+id/include2"
         layout="@layout/content_allowance_detail" />
 
+    <TextView
+        android:id="@+id/dollar_sign"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="200dp"
+        android:text="$"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:textSize="24sp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,8 +61,9 @@
 
         <EditText
             android:id="@+id/transaction_amount"
-            android:layout_width="match_parent"
+            android:layout_width="355dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
             android:inputType="numberSigned"
             android:text="Amount"
             android:textAlignment="center"
@@ -68,7 +79,7 @@
             android:id="@+id/edit_trans_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Edit" />
+            android:text="Save Edit" />
 
         <Button
             android:id="@+id/delete_trans_button"
