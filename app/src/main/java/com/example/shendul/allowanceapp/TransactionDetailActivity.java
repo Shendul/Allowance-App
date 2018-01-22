@@ -1,6 +1,8 @@
 package com.example.shendul.allowanceapp;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -81,17 +83,36 @@ public class TransactionDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d(TAG, "Clicked Delete Transaction button");
                 // TODO: create an are you sure dialog box.
-                mDatabase = FirebaseDatabase.getInstance().getReference();
+                AlertDialog.Builder builder = new AlertDialog.Builder(TransactionDetailActivity.this);
+                builder.setMessage(R.string.dialog_message)
+                        .setTitle(R.string.dialog_title);
 
-                // remove transaction from the database.
-                mDatabase.child("allowances")
-                        .child(allowanceID)
-                        .child("transactions")
-                        .child(transID)
-                        .removeValue();
+                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked OK button
+                        Log.d(TAG, "Clicked ok to delete");
+                        mDatabase = FirebaseDatabase.getInstance().getReference();
 
-                // once the transaction has been deleted, exit the activity.
-                finish();
+                        // remove transaction from the database.
+                        mDatabase.child("allowances")
+                                .child(allowanceID)
+                                .child("transactions")
+                                .child(transID)
+                                .removeValue();
+
+                        // once the transaction has been deleted, exit the activity.
+                        finish();
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                        Log.d(TAG, "Clicked Cancel Delete Transaction button");
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
             }
         });
         findViewById(R.id.edit_trans_button).setOnClickListener(new View.OnClickListener() {
