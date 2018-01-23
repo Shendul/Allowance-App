@@ -9,8 +9,8 @@
     <ListView
         android:id="@+id/transactions_list"
         android:layout_width="match_parent"
-        android:layout_height="270dp"
-        android:layout_marginTop="290dp"
+        android:layout_height="249dp"
+        android:layout_marginTop="310dp"
         tools:layout_editor_absoluteY="152dp" />
 
     <android.support.design.widget.AppBarLayout
@@ -76,7 +76,13 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="41dp" />
+            android:layout_height="18dp" />
+
+        <Button
+            android:id="@+id/delete_allowance_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete Allowance" />
 
         <Button
             android:id="@+id/share_allowance_button"

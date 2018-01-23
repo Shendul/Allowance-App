@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -78,11 +79,16 @@ public class TransactionDetailActivity extends AppCompatActivity {
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
+
+        // Make sure that the Original Goal transaction cannot be deleted.
+        if (transID.equals("k0")) {
+            Button delete = findViewById(R.id.delete_trans_button);
+            delete.setVisibility(View.GONE);
+        }
         findViewById(R.id.delete_trans_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "Clicked Delete Transaction button");
-                // TODO: create an are you sure dialog box.
                 AlertDialog.Builder builder = new AlertDialog.Builder(TransactionDetailActivity.this);
                 builder.setMessage(R.string.dialog_message)
                         .setTitle(R.string.dialog_title);

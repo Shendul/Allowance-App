@@ -1,8 +1,10 @@
 package com.example.shendul.allowanceapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -33,6 +35,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     ArrayList<String> transArray = new ArrayList<String>();
     ArrayList<String> transDescArray = new ArrayList<String>();
+    ArrayList<String> usersToRemoveFromAllowanceArray = new ArrayList<String>();
     ArrayAdapter adapter;
 
     @Override
@@ -49,7 +52,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
         mDatabase = database.getReference();
         String user = getIntent().getStringExtra("USER_NAME");
         String allowanceName = getIntent().getStringExtra("ALLOWANCE_NAME");
-        String allowanceID =  getIntent().getStringExtra("ALLOWANCE_ID");
+        final String allowanceID =  getIntent().getStringExtra("ALLOWANCE_ID");
         mAllowanceName.setText(allowanceName);
 
 
@@ -113,7 +116,29 @@ public class AllowanceDetailActivity extends AppCompatActivity {
             }
         });
 
+        DatabaseReference allowanceUsersRef = database.getReference("allowances/" +
+                allowanceID + "/users");
 
+        allowanceUsersRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                HashMap<String, String> usersToRemove = (HashMap<String, String>) dataSnapshot.getValue();
+                usersToRemoveFromAllowanceArray.clear();
+                if (usersToRemove == null) {
+                    //TODO: display message.
+                    Log.e(TAG, "Database is empty");
+                    return;
+                }
+                usersToRemoveFromAllowanceArray.addAll(usersToRemove.keySet());
+                Log.d(TAG, "UsersToRemove is: " + usersToRemove);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -129,6 +154,47 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                 Log.d(TAG, "Clicked Share Allowance button for " + mAllowanceName
                         .getText().toString());
                 startShareAllowanceActivity();
+            }
+        });
+        findViewById(R.id.delete_allowance_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "Clicked Delete Allowance button");
+                AlertDialog.Builder builder = new AlertDialog.Builder(AllowanceDetailActivity.this);
+                builder.setMessage(R.string.allowance_dialog_message)
+                        .setTitle(R.string.allowance_dialog_title);
+
+                builder.setPositiveButton(R.string.allowance_ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked OK button
+                        Log.d(TAG, "Clicked ok to delete allowance");
+                        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+                        // remove allowance and all of its data from the database.
+                        mDatabase.child("allowances")
+                                .child(allowanceID)
+                                .removeValue();
+                        // Also remove the allowance id from each of the users that it has been shared with.
+                        for (int u = 0; u < usersToRemoveFromAllowanceArray.size(); u++) {
+                            mDatabase.child(usersToRemoveFromAllowanceArray.get(u))
+                                    .child("allowances")
+                                    .child(allowanceID)
+                                    .removeValue();
+                        }
+
+                        // once the transaction has been deleted, exit the activity.
+                        finish();
+                    }
+                });
+                builder.setNegativeButton(R.string.allowance_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                        Log.d(TAG, "Clicked Cancel Delete Allowance button");
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
             }
         });
     }

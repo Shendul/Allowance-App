@@ -107,6 +107,12 @@ public class CreateAllowanceActivity extends AppCompatActivity {
                     mDatabase.child("allowances").child(allowID)
                             .child("nextTransID")
                             .setValue("k1");
+                    // add creating user to the allowance's users.
+                    mDatabase.child("allowances")
+                            .child(allowID)
+                            .child("users")
+                            .child(user)
+                            .setValue("");
 
                     // increment allowID
                     allowID = "k" + (Integer.parseInt(allowID.substring(1)) + 1);
