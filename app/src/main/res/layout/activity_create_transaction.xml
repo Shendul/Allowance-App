@@ -43,7 +43,7 @@
         android:layout_marginLeft="15dp"
         android:layout_marginTop="200dp"
         android:ems="10"
-        android:inputType="numberSigned" />
+        android:inputType="numberSigned|numberDecimal" />
 
     <TextView
         android:id="@+id/dollarSign"

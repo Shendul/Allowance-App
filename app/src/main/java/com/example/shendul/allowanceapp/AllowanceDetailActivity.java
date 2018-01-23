@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -79,7 +80,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                int sum = 0;
+                BigDecimal sum = new BigDecimal(0);
                 HashMap<String, String> value = (HashMap<String, String>) dataSnapshot.getValue();
                 transDescArray.clear();
                 transArray.clear();
@@ -103,7 +104,8 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                         return;
                     }
                     transDescArray.add(transDesc);
-                    sum += Integer.parseInt(transAmount);
+                    BigDecimal bd = new BigDecimal(transAmount);
+                    sum = sum.add(bd);
                 }
                 Log.d(TAG, "Sum is: " + sum);
                 mAllowanceBalance.setText("$" + sum);

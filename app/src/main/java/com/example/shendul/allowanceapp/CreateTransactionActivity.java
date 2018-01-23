@@ -3,6 +3,7 @@ package com.example.shendul.allowanceapp;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -30,6 +31,8 @@ public class CreateTransactionActivity extends AppCompatActivity {
 
         mTransactionAmount = (EditText)findViewById(R.id.amountText);
         mDescription = (EditText)findViewById(R.id.descText);
+
+        mTransactionAmount.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(15,2)});
 
         final String user = getIntent().getStringExtra("USER_NAME");
         final String allowanceID = getIntent().getStringExtra("ALLOWANCE_ID");

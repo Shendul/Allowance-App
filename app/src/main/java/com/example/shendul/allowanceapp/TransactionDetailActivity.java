@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -37,6 +38,8 @@ public class TransactionDetailActivity extends AppCompatActivity {
         mTransactionAmount = (EditText)findViewById(R.id.transaction_amount);
         mTransactionCreatedBy = (TextView) findViewById(R.id.created_by);
         mTransactionLastEditedBy = (TextView)findViewById(R.id.edited_by);
+
+        mTransactionAmount.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(15,2)});
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 

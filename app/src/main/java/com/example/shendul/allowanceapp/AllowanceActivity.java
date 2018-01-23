@@ -46,8 +46,8 @@ public class AllowanceActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
     private static final String TAG = "AllowanceActivity";
 
-    ArrayList<String> userAllowanceArray = new ArrayList<String>();
-    ArrayList<String> allowanceArray = new ArrayList<String>();
+    ArrayList<String> userAllowanceArray = new ArrayList<>();
+    ArrayList<String> allowanceArray = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +66,7 @@ public class AllowanceActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_allowance);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
@@ -138,7 +138,7 @@ public class AllowanceActivity extends AppCompatActivity {
             SignInButton signInButton = findViewById(R.id.sign_in_button);
             signInButton.setVisibility(View.GONE);
 
-            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            FloatingActionButton fab = findViewById(R.id.fab);
             fab.setVisibility(View.VISIBLE);
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -148,14 +148,15 @@ public class AllowanceActivity extends AppCompatActivity {
             });
 
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
-            String userName = mAuth.getCurrentUser().getDisplayName();
+            String userName = mAuth.getCurrentUser().getEmail();
+            userName = userName.substring(0, userName.length() - 4);
             DatabaseReference userRef = database.getReference(userName + "/allowances");
             DatabaseReference allowanceRef = database.getReference("allowances");
 
-            final ArrayAdapter adapter = new ArrayAdapter<String>(this,
+            final ArrayAdapter adapter = new ArrayAdapter<>(this,
                     R.layout.allowance_listview, allowanceArray);
 
-            ListView listView = (ListView) findViewById(R.id.allowance_list);
+            ListView listView = findViewById(R.id.allowance_list);
             listView.setAdapter(adapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -224,7 +225,7 @@ public class AllowanceActivity extends AppCompatActivity {
         } else {
             SignInButton signInButton = findViewById(R.id.sign_in_button);
             signInButton.setSize(SignInButton.SIZE_STANDARD);
-            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            FloatingActionButton fab = findViewById(R.id.fab);
             fab.setVisibility(View.GONE);
         }
     }
@@ -252,13 +253,15 @@ public class AllowanceActivity extends AppCompatActivity {
 
     private void startCreateAllowanceActivity() {
         Intent intent = new Intent(this, CreateAllowanceActivity.class);
-        intent.putExtra("USER_NAME", mAuth.getCurrentUser().getDisplayName());
+        String user_name = mAuth.getCurrentUser().getEmail();
+        intent.putExtra("USER_NAME", user_name.substring(0, user_name.length() - 4));
         startActivity(intent);
     }
 
     private void startAllowanceDetailActivity(String allowance_name, int position) {
         Intent intent = new Intent(this, AllowanceDetailActivity.class);
-        intent.putExtra("USER_NAME", mAuth.getCurrentUser().getDisplayName());
+        String user_name = mAuth.getCurrentUser().getEmail();
+        intent.putExtra("USER_NAME", user_name.substring(0, user_name.length() - 4));
         intent.putExtra("ALLOWANCE_NAME", allowance_name);
         String allowance_id = "" + userAllowanceArray.get(position);
         intent.putExtra("ALLOWANCE_ID", allowance_id);

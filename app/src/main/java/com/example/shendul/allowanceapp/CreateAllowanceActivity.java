@@ -3,6 +3,7 @@ package com.example.shendul.allowanceapp;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -30,6 +31,8 @@ public class CreateAllowanceActivity extends AppCompatActivity {
 
         mAllowanceName = (EditText)findViewById(R.id.nameText);
         mAllowanceAmount = (EditText)findViewById(R.id.amountText);
+
+        mAllowanceAmount.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(15,2)});
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference allowIDRef = database.getReference("allowances/nextAllowID");
