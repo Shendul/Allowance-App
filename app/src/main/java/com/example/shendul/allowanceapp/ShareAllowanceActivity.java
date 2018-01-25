@@ -25,18 +25,18 @@ public class ShareAllowanceActivity extends AppCompatActivity {
     TextView mSharedUsers;
     private DatabaseReference mDatabase;
     HashMap<String, String> users;
-    ArrayList<String> sharedArray = new ArrayList<String>();
+    ArrayList<String> sharedArray = new ArrayList<>();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_allowance);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mNewUserName = (EditText)findViewById(R.id.new_user);
-        mSharedUsers = (TextView)findViewById(R.id.users_shared_with);
+        mNewUserName = findViewById(R.id.new_user);
+        mSharedUsers = findViewById(R.id.users_shared_with);
 
         final String allowanceID = getIntent().getStringExtra("ALLOWANCE_ID");
 
@@ -103,10 +103,11 @@ public class ShareAllowanceActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "Clicked Add User button");
-                final String user = mNewUserName.getText().toString();
+                String user = mNewUserName.getText().toString();
+                if (user.substring(user.length() - 4).equals(".com"))
+                    user = user.substring(0, user.length() - 4);
                 Log.d(TAG, "User is " + user);
 
-                //Log.d(TAG, "Users is " + users);
                 if (user.equals("") && users.isEmpty()) {
                     // show error message to user
                 } else if (users.containsKey(user) && !user.equals("allowances")) {
@@ -125,6 +126,7 @@ public class ShareAllowanceActivity extends AppCompatActivity {
                     finish();
                 } else {
                     //display error message.
+                    Log.d(TAG, "Something went wrong with the add user button");
                 }
             }
         });

@@ -31,13 +31,13 @@ public class TransactionDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mTransactionDesc = (EditText) findViewById(R.id.transaction_desc);
-        mTransactionAmount = (EditText)findViewById(R.id.transaction_amount);
-        mTransactionCreatedBy = (TextView) findViewById(R.id.created_by);
-        mTransactionLastEditedBy = (TextView)findViewById(R.id.edited_by);
+        mTransactionDesc = findViewById(R.id.transaction_desc);
+        mTransactionAmount = findViewById(R.id.transaction_amount);
+        mTransactionCreatedBy = findViewById(R.id.created_by);
+        mTransactionLastEditedBy = findViewById(R.id.edited_by);
 
         mTransactionAmount.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(15,2)});
 
@@ -53,8 +53,6 @@ public class TransactionDetailActivity extends AppCompatActivity {
         transRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
                 String desc = (String) dataSnapshot.child("desc").getValue();
                 String amount = (String) dataSnapshot.child("amount").getValue();
                 String createdBy = (String) dataSnapshot.child("createdBy").getValue();

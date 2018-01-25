@@ -8,8 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+//import android.view.Menu;
+//import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -85,7 +85,7 @@ public class AllowanceActivity extends AppCompatActivity {
 
 
     }
-
+    /* Don't use the snowman for now
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -107,6 +107,7 @@ public class AllowanceActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    */
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -241,6 +242,14 @@ public class AllowanceActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithCredentials:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            // get email and remove .com from it because firebase does not allow the storing of .
+                            String userEmail = user.getEmail();
+                            userEmail = userEmail.substring(0,userEmail.length() - 4);
+
+                            // also create the user in the firebase database
+                            DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+                            database.child(userEmail).child("exists").setValue("true");
+
                             updateUI(user);
                         } else {
                             Log.d(TAG, "signInWithCredentials:failed");

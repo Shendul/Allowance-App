@@ -26,11 +26,11 @@ public class CreateTransactionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_transaction);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mTransactionAmount = (EditText)findViewById(R.id.amountText);
-        mDescription = (EditText)findViewById(R.id.descText);
+        mTransactionAmount = findViewById(R.id.amountText);
+        mDescription = findViewById(R.id.descText);
 
         mTransactionAmount.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(15,2)});
 

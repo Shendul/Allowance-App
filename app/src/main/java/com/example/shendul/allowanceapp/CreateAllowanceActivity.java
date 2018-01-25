@@ -26,11 +26,11 @@ public class CreateAllowanceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_allowance);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mAllowanceName = (EditText)findViewById(R.id.nameText);
-        mAllowanceAmount = (EditText)findViewById(R.id.amountText);
+        mAllowanceName = findViewById(R.id.nameText);
+        mAllowanceAmount = findViewById(R.id.amountText);
 
         mAllowanceAmount.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(15,2)});
 
@@ -38,12 +38,10 @@ public class CreateAllowanceActivity extends AppCompatActivity {
         DatabaseReference allowIDRef = database.getReference("allowances/nextAllowID");
 
 
-        // Read from the database
+        // Query for allowance ID
         allowIDRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
                 allowID = (String) dataSnapshot.getValue();
                 Log.d(TAG, "AllowID is: " + allowID);
                 if (allowID == null) {
@@ -71,10 +69,6 @@ public class CreateAllowanceActivity extends AppCompatActivity {
 
                 mDatabase = FirebaseDatabase.getInstance().getReference();
                 String user = getIntent().getStringExtra("USER_NAME");
-                // TODO: there is a bug that if the google user has the same exact name it will in fact
-                // treat them as one user. Also if an allowance is created with the same name it will
-                // overwrite the previous one, this may not be so much a bug but a feature, depending
-                // on if we want that to be part of the design.
                 
                 if (mAllowanceAmount.getText().toString().equals("")) {
                     // show error message to user

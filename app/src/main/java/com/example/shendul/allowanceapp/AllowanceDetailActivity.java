@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 // TODO: BUG_LIST:
-// 1. When transactions are edited this screen does not always update without a refresh.
+// 1. When transactions are edited this screen does not always update without a refresh. - think this has to do with the speed of writing to the database and then reading back.
 // 2. First time clicking an allowance seems to not populate the transaction list. #POSSIBLY SQUASHED, REQ MORE TESTING
 
 public class AllowanceDetailActivity extends AppCompatActivity {
@@ -34,20 +34,20 @@ public class AllowanceDetailActivity extends AppCompatActivity {
     TextView mAllowanceName;
     TextView mAllowanceBalance;
     private DatabaseReference mDatabase;
-    ArrayList<String> transArray = new ArrayList<String>();
-    ArrayList<String> transDescArray = new ArrayList<String>();
-    ArrayList<String> usersToRemoveFromAllowanceArray = new ArrayList<String>();
+    ArrayList<String> transArray = new ArrayList<>();
+    ArrayList<String> transDescArray = new ArrayList<>();
+    ArrayList<String> usersToRemoveFromAllowanceArray = new ArrayList<>();
     ArrayAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_allowance_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mAllowanceName = (TextView) findViewById(R.id.allowance_name);
-        mAllowanceBalance = (TextView)findViewById(R.id.allowance_balance);
+        mAllowanceName = findViewById(R.id.allowance_name);
+        mAllowanceBalance = findViewById(R.id.allowance_balance);
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         mDatabase = database.getReference();
@@ -57,9 +57,9 @@ public class AllowanceDetailActivity extends AppCompatActivity {
         mAllowanceName.setText(allowanceName);
 
 
-        adapter = new ArrayAdapter<String>(this,
+        adapter = new ArrayAdapter<>(this,
                 R.layout.allowance_listview, transDescArray);
-        ListView listView = (ListView) findViewById(R.id.transactions_list);
+        ListView listView = findViewById(R.id.transactions_list);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -74,12 +74,10 @@ public class AllowanceDetailActivity extends AppCompatActivity {
         // grab all transactions from firebase and get their sum.
         DatabaseReference transRef = database.getReference("allowances/" +
                 allowanceID + "/transactions");
-        // Read from the database
+
         transRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
                 BigDecimal sum = new BigDecimal(0);
                 HashMap<String, String> value = (HashMap<String, String>) dataSnapshot.getValue();
                 transDescArray.clear();
@@ -142,7 +140,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -204,6 +202,53 @@ public class AllowanceDetailActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final String allowanceID =  getIntent().getStringExtra("ALLOWANCE_ID");
+
+        // grab all transactions from firebase and get their sum.
+        DatabaseReference transRef = database.getReference("allowances/" +
+                allowanceID + "/transactions");
+
+        transRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                BigDecimal sum = new BigDecimal(0);
+                HashMap<String, String> value = (HashMap<String, String>) dataSnapshot.getValue();
+                transDescArray.clear();
+                transArray.clear();
+                if (value == null) {
+                    //TODO: display message.
+                    Log.e(TAG, "Database is empty");
+                    return;
+                }
+                transArray.addAll(value.keySet());
+                Log.d(TAG, "Value is: " + value);
+                for (int i = 0; i <  transArray.size(); i++) {
+                    String transDesc = (String) dataSnapshot
+                            .child(transArray.get(i) + "/desc").getValue();
+                    String transAmount = (String) dataSnapshot
+                            .child( transArray.get(i) + "/amount").getValue();
+                    Log.d(TAG, "Transaction amount is: " +  transAmount);
+                    Log.d(TAG, "Transaction desc is: " +  transDesc);
+                    if ( transAmount == null || transDesc == null) {
+                        //TODO: display message.
+                        Log.e(TAG, "Database is empty");
+                        return;
+                    }
+                    transDescArray.add(transDesc);
+                    BigDecimal bd = new BigDecimal(transAmount);
+                    sum = sum.add(bd);
+                }
+                Log.d(TAG, "Sum is: " + sum);
+                mAllowanceBalance.setText("$" + sum);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
         adapter.notifyDataSetChanged();
     }
 
