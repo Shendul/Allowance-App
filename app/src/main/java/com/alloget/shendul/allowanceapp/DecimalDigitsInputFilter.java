@@ -1,4 +1,4 @@
-package com.example.shendul.allowanceapp;
+package com.alloget.shendul.allowanceapp;
 
 import android.text.InputFilter;
 import android.text.Spanned;

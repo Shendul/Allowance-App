@@ -1,4 +1,4 @@
-package com.example.shendul.allowanceapp;
+package com.alloget.shendul.allowanceapp;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -51,7 +51,6 @@ public class AllowanceDetailActivity extends AppCompatActivity {
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         mDatabase = database.getReference();
-        String user = getIntent().getStringExtra("USER_NAME");
         String allowanceName = getIntent().getStringExtra("ALLOWANCE_NAME");
         final String allowanceID =  getIntent().getStringExtra("ALLOWANCE_ID");
         mAllowanceName.setText(allowanceName);
@@ -255,6 +254,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
     private void startCreateTransactionActivity() {
         Intent intent = new Intent(this, CreateTransactionActivity.class);
         intent.putExtra("USER_NAME", getIntent().getStringExtra("USER_NAME"));
+        intent.putExtra("EMAIL", getIntent().getStringExtra("EMAIL"));
         intent.putExtra("ALLOWANCE_NAME",getIntent().getStringExtra("ALLOWANCE_NAME"));
         intent.putExtra("ALLOWANCE_ID",getIntent().getStringExtra("ALLOWANCE_ID"));
         startActivity(intent);
@@ -262,7 +262,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
 
     private void startTransactionDetailActivity(String transactionID) {
         Intent intent = new Intent(this, TransactionDetailActivity.class);
-        intent.putExtra("USER_NAME", getIntent().getStringExtra("USER_NAME"));
+        intent.putExtra("EMAIL", getIntent().getStringExtra("EMAIL"));
         intent.putExtra("TRANSACTION_ID",transactionID);
         intent.putExtra("ALLOWANCE_ID",getIntent().getStringExtra("ALLOWANCE_ID"));
         startActivity(intent);

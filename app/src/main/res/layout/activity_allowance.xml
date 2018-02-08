@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.shendul.allowanceapp.AllowanceActivity">
+    tools:context="com.alloget.shendul.allowanceapp.AllowanceActivity">
 
     <ListView
         android:id="@+id/allowance_list"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.shendul.allowanceapp">
+    package="com.alloget.shendul.allowanceapp">
 
     <application
         android:allowBackup="true"
@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".AllowanceActivity"
+            android:name="com.alloget.shendul.allowanceapp.AllowanceActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -20,23 +20,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CreateAllowanceActivity"
+            android:name="com.alloget.shendul.allowanceapp.CreateAllowanceActivity"
             android:label="@string/title_activity_create_allowance"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AllowanceDetailActivity"
+            android:name="com.alloget.shendul.allowanceapp.AllowanceDetailActivity"
             android:label="@string/title_activity_allowance_detail"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".CreateTransactionActivity"
+            android:name="com.alloget.shendul.allowanceapp.CreateTransactionActivity"
             android:label="@string/title_activity_create_transaction"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".TransactionDetailActivity"
+            android:name="com.alloget.shendul.allowanceapp.TransactionDetailActivity"
             android:label="@string/title_activity_transaction_detail"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ShareAllowanceActivity"
+            android:name="com.alloget.shendul.allowanceapp.ShareAllowanceActivity"
             android:label="@string/title_activity_share_allowance"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

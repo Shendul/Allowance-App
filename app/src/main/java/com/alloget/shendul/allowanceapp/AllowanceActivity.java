@@ -1,4 +1,4 @@
-package com.example.shendul.allowanceapp;
+package com.alloget.shendul.allowanceapp;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,8 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-//import android.view.Menu;
-//import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -35,8 +33,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import com.alloget.shendul.allowanceapp.FirebaseEncodingAndDecoding;
 
 
 public class AllowanceActivity extends AppCompatActivity {
@@ -149,9 +151,7 @@ public class AllowanceActivity extends AppCompatActivity {
             });
 
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
-            String userName = mAuth.getCurrentUser().getEmail();
-            userName = userName.substring(0, userName.length() - 4);
-            DatabaseReference userRef = database.getReference(userName + "/allowances");
+            DatabaseReference userRef = database.getReference(account.getUid() + "/allowances");
             DatabaseReference allowanceRef = database.getReference("allowances");
 
             final ArrayAdapter adapter = new ArrayAdapter<>(this,
@@ -244,11 +244,12 @@ public class AllowanceActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             // get email and remove .com from it because firebase does not allow the storing of .
                             String userEmail = user.getEmail();
-                            userEmail = userEmail.substring(0,userEmail.length() - 4);
+                            userEmail = FirebaseEncodingAndDecoding.encodeForFirebaseKey(userEmail);
 
                             // also create the user in the firebase database
                             DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-                            database.child(userEmail).child("exists").setValue("true");
+                            //database.child(user.getUid()).child("email").setValue(userEmail);
+                            database.child("EmailToUID").child(userEmail).setValue(user.getUid());
 
                             updateUI(user);
                         } else {
@@ -262,15 +263,28 @@ public class AllowanceActivity extends AppCompatActivity {
 
     private void startCreateAllowanceActivity() {
         Intent intent = new Intent(this, CreateAllowanceActivity.class);
-        String user_name = mAuth.getCurrentUser().getEmail();
-        intent.putExtra("USER_NAME", user_name.substring(0, user_name.length() - 4));
+        if (mAuth.getCurrentUser() == null) {
+            Log.e(TAG, "No current user.");
+            return;
+        }
+        String userID =  mAuth.getCurrentUser().getUid();
+        String userEmail = mAuth.getCurrentUser().getEmail();
+        userEmail = FirebaseEncodingAndDecoding.encodeForFirebaseKey(userEmail);
+        intent.putExtra("USER_NAME", userID);
+        intent.putExtra("EMAIL", userEmail);
         startActivity(intent);
     }
 
     private void startAllowanceDetailActivity(String allowance_name, int position) {
         Intent intent = new Intent(this, AllowanceDetailActivity.class);
-        String user_name = mAuth.getCurrentUser().getEmail();
-        intent.putExtra("USER_NAME", user_name.substring(0, user_name.length() - 4));
+        if (mAuth.getCurrentUser() == null) {
+            Log.e(TAG, "No current user.");
+            return;
+        }
+        String userEmail = mAuth.getCurrentUser().getEmail();
+        String userID = mAuth.getCurrentUser().getUid();
+        intent.putExtra("USER_NAME", userID);
+        intent.putExtra("EMAIL", userEmail);
         intent.putExtra("ALLOWANCE_NAME", allowance_name);
         String allowance_id = "" + userAllowanceArray.get(position);
         intent.putExtra("ALLOWANCE_ID", allowance_id);

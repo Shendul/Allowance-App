@@ -1,4 +1,4 @@
-package com.example.shendul.allowanceapp;
+package com.alloget.shendul.allowanceapp;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.shendul.allowanceapp", appContext.getPackageName());
+        assertEquals("com.alloget.shendul.allowanceapp", appContext.getPackageName());
     }
 }

@@ -8,18 +8,18 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:96587991199:android:7ea77ce53f639257",
+        "mobilesdk_app_id": "1:96587991199:android:a9274b070730e047",
         "android_client_info": {
-          "package_name": "com.example.shendul.allowanceapp"
+          "package_name": "com.alloget.shendul.allowanceapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "96587991199-tckpg6bvl3vqt731r8ovn702n9cvluee.apps.googleusercontent.com",
+          "client_id": "96587991199-dq2k521v68839m0b22gq5o89fn4ufhf0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.shendul.allowanceapp",
-            "certificate_hash": "94b5248bf8431be783b9edc68b829183ba09a115"
+            "package_name": "com.alloget.shendul.allowanceapp",
+            "certificate_hash": "1db485b4fd2b65a3df94677a227e6660f9c18eb1"
           }
         },
         {

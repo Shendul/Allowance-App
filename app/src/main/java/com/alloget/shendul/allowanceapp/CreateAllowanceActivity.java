@@ -1,4 +1,4 @@
-package com.example.shendul.allowanceapp;
+package com.alloget.shendul.allowanceapp;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +13,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 public class CreateAllowanceActivity extends AppCompatActivity {
 
@@ -69,6 +72,12 @@ public class CreateAllowanceActivity extends AppCompatActivity {
 
                 mDatabase = FirebaseDatabase.getInstance().getReference();
                 String user = getIntent().getStringExtra("USER_NAME");
+                String emailAddress = getIntent().getStringExtra("EMAIL");
+                try {
+                    emailAddress = URLDecoder.decode(emailAddress, "UTF-8");
+                } catch (UnsupportedEncodingException exception) {
+                    Log.e(TAG, "unsupportedEncodingException thrown and not handled");
+                }
                 
                 if (mAllowanceAmount.getText().toString().equals("")) {
                     // show error message to user
@@ -89,7 +98,7 @@ public class CreateAllowanceActivity extends AppCompatActivity {
                             .child("transactions")
                             .child(zero)
                             .child("createdBy")
-                            .setValue(user);
+                            .setValue(emailAddress);
                     mDatabase.child("allowances").child(allowID)
                             .child("transactions")
                             .child(zero)

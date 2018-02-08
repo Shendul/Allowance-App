@@ -1,4 +1,4 @@
-package com.example.shendul.allowanceapp;
+package com.alloget.shendul.allowanceapp;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

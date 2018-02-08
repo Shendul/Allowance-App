@@ -1,4 +1,4 @@
-package com.example.shendul.allowanceapp;
+package com.alloget.shendul.allowanceapp;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -45,7 +45,7 @@ public class TransactionDetailActivity extends AppCompatActivity {
 
         final String allowanceID =  getIntent().getStringExtra("ALLOWANCE_ID");
         final String transID =  getIntent().getStringExtra("TRANSACTION_ID");
-        final String user =  getIntent().getStringExtra("USER_NAME");
+        final String userEmail =  getIntent().getStringExtra("EMAIL");
 
         DatabaseReference transRef = database.getReference("allowances/" +
                 allowanceID + "/transactions/" + transID);
@@ -145,7 +145,7 @@ public class TransactionDetailActivity extends AppCompatActivity {
                             .child("transactions")
                             .child(transID)
                             .child("lastEditedBy")
-                            .setValue(user);
+                            .setValue(userEmail);
                     // update transaction amount.
                     mDatabase.child("allowances")
                             .child(allowanceID)

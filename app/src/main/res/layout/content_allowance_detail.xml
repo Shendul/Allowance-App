@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.shendul.allowanceapp.AllowanceDetailActivity"
+    tools:context="com.alloget.shendul.allowanceapp.AllowanceDetailActivity"
     tools:showIn="@layout/activity_allowance_detail">
 
 </android.support.constraint.ConstraintLayout>
