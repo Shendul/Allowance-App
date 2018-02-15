@@ -164,10 +164,10 @@ public class ShareAllowanceActivity extends AppCompatActivity {
         });
     }
 
-    public static Object getKeyFromValue(Map hm, Object value) {
-        for (Object o : hm.keySet()) {
-            if (hm.get(o).equals(value)) {
-                return o;
+    public static String getKeyFromValue(Map<String, String> hm, String value) {
+        for (String key : hm.keySet()) {
+            if (hm.get(key).equals(value)) {
+                return key;
             }
         }
         return null;
