@@ -8,11 +8,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -146,18 +149,26 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                 startCreateTransactionActivity();
             }
         });
+    }
 
-        findViewById(R.id.share_allowance_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+    @Override
+    public boolean onCreateOptionsMenu (Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_allowance, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item) {
+        final String allowanceID =  getIntent().getStringExtra("ALLOWANCE_ID");
+        int id = item.getItemId();
+
+        switch(id) {
+            case R.id.share_allowance:
                 Log.d(TAG, "Clicked Share Allowance button for " + mAllowanceName
                         .getText().toString());
                 startShareAllowanceActivity();
-            }
-        });
-        findViewById(R.id.delete_allowance_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                break;
+            case R.id.delete_allowance:
                 Log.d(TAG, "Clicked Delete Allowance button");
                 AlertDialog.Builder builder = new AlertDialog.Builder(AllowanceDetailActivity.this);
                 builder.setMessage(R.string.allowance_dialog_message)
@@ -193,9 +204,9 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                 });
                 AlertDialog dialog = builder.create();
                 dialog.show();
-
-            }
-        });
+                break;
+        }
+        return true;
     }
 
     @Override

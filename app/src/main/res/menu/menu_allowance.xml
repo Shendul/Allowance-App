@@ -3,8 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.alloget.shendul.allowanceapp.AllowanceActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/share_allowance"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="Share Allowance"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/delete_allowance"
+        android:orderInCategory="100"
+        android:title="Delete Allowance"
         app:showAsAction="never" />
 </menu>

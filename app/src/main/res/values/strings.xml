@@ -15,4 +15,5 @@
     <string name="allowance_dialog_title">Delete Allowance?</string>
     <string name="allowance_dialog_message">Are you sure you would like to delete this allowance
         and all of its transactions?</string>
+    <string name="title_activity_main">MainActivity</string>
 </resources>

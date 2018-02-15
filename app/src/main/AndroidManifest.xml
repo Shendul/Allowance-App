@@ -10,11 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.alloget.shendul.allowanceapp.AllowanceActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".AllowanceActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,35 +22,35 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.alloget.shendul.allowanceapp.CreateAllowanceActivity"
+            android:name=".CreateAllowanceActivity"
+            android:configChanges="orientation"
             android:label="@string/title_activity_create_allowance"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.alloget.shendul.allowanceapp.AllowanceDetailActivity"
+            android:name=".AllowanceDetailActivity"
+            android:configChanges="orientation"
             android:label="@string/title_activity_allowance_detail"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.alloget.shendul.allowanceapp.CreateTransactionActivity"
+            android:name=".CreateTransactionActivity"
+            android:configChanges="orientation"
             android:label="@string/title_activity_create_transaction"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.alloget.shendul.allowanceapp.TransactionDetailActivity"
+            android:name=".TransactionDetailActivity"
+            android:configChanges="orientation"
             android:label="@string/title_activity_transaction_detail"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.alloget.shendul.allowanceapp.ShareAllowanceActivity"
-            android:label="@string/title_activity_share_allowance"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".ShareAllowanceActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"></activity>
+            android:label="@string/title_activity_share_allowance"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
