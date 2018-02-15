@@ -56,7 +56,11 @@ public class TransactionDetailActivity extends AppCompatActivity {
                 String desc = (String) dataSnapshot.child("desc").getValue();
                 String amount = (String) dataSnapshot.child("amount").getValue();
                 String createdBy = (String) dataSnapshot.child("createdBy").getValue();
+                if (createdBy != null && !createdBy.isEmpty())
+                    createdBy = FirebaseEncodingAndDecoding.decodeFromFirebaseKey(createdBy);
                 String lastEditedBy = (String) dataSnapshot.child("lastEditedBy").getValue();
+                if (lastEditedBy != null && !lastEditedBy.isEmpty())
+                    lastEditedBy = FirebaseEncodingAndDecoding.decodeFromFirebaseKey(lastEditedBy);
                 if (desc == null || amount == null) {
                     //TODO: display message.
                     Log.e(TAG, "Database is empty");
