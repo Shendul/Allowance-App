@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 // TODO: BUG_LIST:
@@ -107,6 +108,9 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                     BigDecimal bd = new BigDecimal(transAmount);
                     sum = sum.add(bd);
                 }
+                // reverse arrays so that most recent transactions are shown on top.
+                Collections.reverse(transDescArray);
+                Collections.reverse(transArray);
                 Log.d(TAG, "Sum is: " + sum);
                 mAllowanceBalance.setText("$" + sum);
             }
@@ -249,6 +253,9 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                     BigDecimal bd = new BigDecimal(transAmount);
                     sum = sum.add(bd);
                 }
+                // reverse arrays so that most recent transactions are shown on top.
+                Collections.reverse(transDescArray);
+                Collections.reverse(transArray);
                 Log.d(TAG, "Sum is: " + sum);
                 mAllowanceBalance.setText("$" + sum);
             }
