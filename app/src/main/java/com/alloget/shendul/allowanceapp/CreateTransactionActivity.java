@@ -14,6 +14,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class CreateTransactionActivity extends AppCompatActivity {
 
     private static final String TAG = "CreateTransActivity";
@@ -32,9 +37,19 @@ public class CreateTransactionActivity extends AppCompatActivity {
         mTransactionAmount = findViewById(R.id.amountText);
         mDescription = findViewById(R.id.descText);
 
+        // get current datetime.
+        Date currentTime = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        //to convert Date to String, use format method of SimpleDateFormat class.
+        final String strDate = dateFormat.format(currentTime);
+        Log.d(TAG, "Current time: " + strDate);
+
+        mDescription.setText(strDate);
+
         mTransactionAmount.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(15,2)});
 
         final String user = getIntent().getStringExtra("USER_NAME");
+        final String userEmail = getIntent().getStringExtra("EMAIL");
         final String allowanceID = getIntent().getStringExtra("ALLOWANCE_ID");
 
         // grab all transactions from firebase and get their sum.
@@ -84,7 +99,7 @@ public class CreateTransactionActivity extends AppCompatActivity {
                             .child("transactions")
                             .child(mTransID)
                             .child("createdBy")
-                            .setValue(user);
+                            .setValue(userEmail);
                     mDatabase.child("allowances")
                             .child(allowanceID)
                             .child("transactions")
@@ -96,7 +111,7 @@ public class CreateTransactionActivity extends AppCompatActivity {
                             .child("transactions")
                             .child(mTransID)
                             .child("desc")
-                            .setValue("Transaction: " + mTransID);
+                            .setValue(strDate);
                     mTransID = "k" + (Integer.parseInt(mTransID.substring(1)) + 1);
                     mDatabase.child("allowances")
                             .child(allowanceID)
@@ -111,7 +126,7 @@ public class CreateTransactionActivity extends AppCompatActivity {
                             .child("transactions")
                             .child(mTransID)
                             .child("createdBy")
-                            .setValue(user);
+                            .setValue(userEmail);
                     mDatabase.child("allowances")
                             .child(allowanceID)
                             .child("transactions")

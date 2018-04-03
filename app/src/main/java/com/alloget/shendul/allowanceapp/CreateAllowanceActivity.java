@@ -16,6 +16,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class CreateAllowanceActivity extends AppCompatActivity {
 
@@ -104,11 +108,17 @@ public class CreateAllowanceActivity extends AppCompatActivity {
                             .child(zero)
                             .child("amount")
                             .setValue(mAllowanceAmount.getText().toString());
+                    // get current datetime.
+                    Date currentTime = Calendar.getInstance().getTime();
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    //to convert Date to String, use format method of SimpleDateFormat class.
+                    String strDate = dateFormat.format(currentTime);
+                    Log.d(TAG, "Current time: " + strDate);
                     mDatabase.child("allowances").child(allowID)
                             .child("transactions")
                             .child(zero)
                             .child("desc")
-                            .setValue("Allowance Budget: Goal"); // default 1st transaction
+                            .setValue(strDate); // default 1st transaction
                     // create trans id tracker
                     mDatabase.child("allowances").child(allowID)
                             .child("nextTransID")
