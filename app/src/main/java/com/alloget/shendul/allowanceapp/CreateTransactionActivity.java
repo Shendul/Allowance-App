@@ -48,7 +48,7 @@ public class CreateTransactionActivity extends AppCompatActivity {
 
         mTransactionAmount.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(15,2)});
 
-        final String user = getIntent().getStringExtra("USER_NAME");
+        final String user = getIntent().getStringExtra("USER_ID");
         final String userEmail = getIntent().getStringExtra("EMAIL");
         final String allowanceID = getIntent().getStringExtra("ALLOWANCE_ID");
 

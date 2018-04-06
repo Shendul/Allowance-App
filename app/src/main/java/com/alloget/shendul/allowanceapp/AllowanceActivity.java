@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -40,6 +41,8 @@ import java.util.HashMap;
 
 import com.alloget.shendul.allowanceapp.FirebaseEncodingAndDecoding;
 
+// TODO: BUG_LIST:
+// NONE CURRENTLY KNOWN.
 
 public class AllowanceActivity extends AppCompatActivity {
 
@@ -47,6 +50,8 @@ public class AllowanceActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 123;
     private static final String TAG = "AllowanceActivity";
+    private ProgressBar spinner;
+
 
     ArrayList<String> userAllowanceArray = new ArrayList<>();
     ArrayList<String> allowanceArray = new ArrayList<>();
@@ -55,6 +60,7 @@ public class AllowanceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         mAuth = FirebaseAuth.getInstance();
+
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -77,6 +83,8 @@ public class AllowanceActivity extends AppCompatActivity {
                 signIn();
             }
         });
+        spinner = findViewById(R.id.progressBar);
+        spinner.setVisibility(View.GONE);
     }
 
     @Override
@@ -87,29 +95,6 @@ public class AllowanceActivity extends AppCompatActivity {
 
 
     }
-    /* Don't use the snowman for now
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_allowance, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-    */
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -137,6 +122,7 @@ public class AllowanceActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser account) {
         if (account != null) {
+            spinner.setVisibility(View.VISIBLE);
             Log.d(TAG, "loggedIn with " + account.getDisplayName());
             SignInButton signInButton = findViewById(R.id.sign_in_button);
             signInButton.setVisibility(View.GONE);
@@ -178,9 +164,11 @@ public class AllowanceActivity extends AppCompatActivity {
                     if (value == null) {
                         //TODO: display message.
                         Log.e(TAG, "Database is empty");
+                        spinner.setVisibility(View.GONE);
                         return;
                     }
                     userAllowanceArray.addAll(value.keySet());
+                    spinner.setVisibility(View.GONE);
                     Log.d(TAG, "Value is: " + value);
 
                 }
@@ -283,7 +271,7 @@ public class AllowanceActivity extends AppCompatActivity {
         }
         String userEmail = mAuth.getCurrentUser().getEmail();
         String userID = mAuth.getCurrentUser().getUid();
-        intent.putExtra("USER_NAME", userID);
+        intent.putExtra("USER_ID", userID);
         intent.putExtra("EMAIL", userEmail);
         intent.putExtra("ALLOWANCE_NAME", allowance_name);
         String allowance_id = "" + userAllowanceArray.get(position);

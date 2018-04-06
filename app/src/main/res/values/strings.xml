@@ -9,11 +9,14 @@
     <string name="ok">Delete Transaction</string>
     <string name="cancel">Cancel</string>
     <string name="allowance_ok">Delete Allowance</string>
+    <string name="allowance_leave_ok">Leave Allowance</string>
     <string name="allowance_cancel">Cancel</string>
     <string name="dialog_title">Delete Transaction?</string>
     <string name="dialog_message">Are you sure you would like to delete this transaction?</string>
     <string name="allowance_dialog_title">Delete Allowance?</string>
     <string name="allowance_dialog_message">Are you sure you would like to delete this allowance
         and all of its transactions?</string>
+    <string name="allowance_leave_dialog_title">Leave Allowance?</string>
+    <string name="allowance_leave_dialog_message">Are you sure you would like to leave this allowance?</string>
     <string name="title_activity_main">MainActivity</string>
 </resources>

@@ -196,7 +196,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                                     .removeValue();
                         }
 
-                        // once the transaction has been deleted, exit the activity.
+                        // once the allowance has been deleted, exit the activity.
                         finish();
                     }
                 });
@@ -208,6 +208,46 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                 });
                 AlertDialog dialog = builder.create();
                 dialog.show();
+                break;
+            case R.id.leave_allowance:
+                Log.d(TAG, "Clicked Leave Allowance button");
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(AllowanceDetailActivity.this);
+                builder2.setMessage(R.string.allowance_leave_dialog_message)
+                        .setTitle(R.string.allowance_leave_dialog_title);
+
+                builder2.setPositiveButton(R.string.allowance_leave_ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked OK button
+                        Log.d(TAG, "Clicked ok to leave allowance");
+                        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+                        //remove the allowance id from this user.
+                        String userID = getIntent().getStringExtra("USER_ID");
+                        mDatabase.child(userID)
+                                .child("allowances")
+                                .child(allowanceID)
+                                .removeValue();
+
+                        // remove the user from the allowance.
+                        mDatabase.child("allowances")
+                                .child(allowanceID)
+                                .child("users")
+                                .child(userID)
+                                .removeValue();
+
+
+                        // once the allowance has been left, exit the activity.
+                        finish();
+                    }
+                });
+                builder2.setNegativeButton(R.string.allowance_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                        Log.d(TAG, "Clicked Cancel Delete Allowance button");
+                    }
+                });
+                AlertDialog dialog2 = builder2.create();
+                dialog2.show();
                 break;
         }
         return true;
@@ -271,7 +311,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
 
     private void startCreateTransactionActivity() {
         Intent intent = new Intent(this, CreateTransactionActivity.class);
-        intent.putExtra("USER_NAME", getIntent().getStringExtra("USER_NAME"));
+        intent.putExtra("USER_ID", getIntent().getStringExtra("USER_ID"));
         intent.putExtra("EMAIL", getIntent().getStringExtra("EMAIL"));
         intent.putExtra("ALLOWANCE_NAME",getIntent().getStringExtra("ALLOWANCE_NAME"));
         intent.putExtra("ALLOWANCE_ID",getIntent().getStringExtra("ALLOWANCE_ID"));
