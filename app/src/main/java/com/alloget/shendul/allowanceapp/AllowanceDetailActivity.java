@@ -235,6 +235,32 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                                 .child(userID)
                                 .removeValue();
 
+                        // check and delete allowance if it has no users.
+                        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference allowanceUsersRef = database.getReference("allowances/" +
+                                allowanceID + "/users");
+                        allowanceUsersRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                HashMap<String, String> usersCheck = (HashMap<String, String>) dataSnapshot.getValue();
+                                if (usersCheck == null) {
+                                    //TODO: display message.
+                                    Log.e(TAG, "Database is empty, delete allowance");
+                                    // remove allowance and all of its data from the database.
+                                    mDatabase.child("allowances")
+                                            .child(allowanceID)
+                                            .removeValue();
+                                    return;
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError error) {
+                                // Failed to read value
+                                Log.w(TAG, "Failed to read value.", error.toException());
+                            }
+                        });
+
 
                         // once the allowance has been left, exit the activity.
                         finish();
