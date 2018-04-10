@@ -10,7 +10,9 @@
         android:id="@+id/allowance_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp" />
+        android:layout_marginTop="55dp"
+        android:divider="@color/transparent"
+        android:dividerHeight="0dp" />
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

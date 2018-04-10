@@ -34,12 +34,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import com.alloget.shendul.allowanceapp.FirebaseEncodingAndDecoding;
 
 // TODO: BUG_LIST:
 // NONE CURRENTLY KNOWN.
@@ -51,10 +47,10 @@ public class AllowanceActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
     private static final String TAG = "AllowanceActivity";
     private ProgressBar spinner;
+    private TwoItemListAdapter mAdapter;
 
-
+    ArrayList<TwoLineListItem> allowanceArray = new ArrayList<>();
     ArrayList<String> userAllowanceArray = new ArrayList<>();
-    ArrayList<String> allowanceArray = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,26 +132,25 @@ public class AllowanceActivity extends AppCompatActivity {
                 }
             });
 
-            final FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference userRef = database.getReference(account.getUid() + "/allowances");
-            DatabaseReference allowanceRef = database.getReference("allowances");
+            final FirebaseDatabase database = FirebaseDatabase.getInstance(); // initialize Firebase reference.
 
-            final ArrayAdapter adapter = new ArrayAdapter<>(this,
-                    R.layout.allowance_listview, allowanceArray);
+            mAdapter = new TwoItemListAdapter(this, allowanceArray);
 
             ListView listView = findViewById(R.id.allowance_list);
-            listView.setAdapter(adapter);
+            listView.setAdapter(mAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapter, View view, int position, long arg3) {
-                    String value = (String) adapter.getItemAtPosition(position);
-                    Log.e(TAG, "Clicked" + value);
-                    startAllowanceDetailActivity(value, position);
+                    TwoLineListItem allowTag = allowanceArray.get(position);
+                    String name = allowTag.getLeftLine();
+                    Log.e(TAG, "Clicked" + name);
+                    startAllowanceDetailActivity(name, position);
 
                 }
             });
 
-            // Read from the database
+            // Get all allowance id's associated with the logged in user.
+            DatabaseReference userRef = database.getReference(account.getUid() + "/allowances");
             userRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -180,7 +175,8 @@ public class AllowanceActivity extends AppCompatActivity {
                 }
             });
 
-            // Read from the database
+            // Get all allowance names and amounts, place them in the listview.
+            DatabaseReference allowanceRef = database.getReference("allowances");
             allowanceRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -189,17 +185,20 @@ public class AllowanceActivity extends AppCompatActivity {
                         Log.d(TAG, "array[i] is: " +  userAllowanceArray.get(i));
                         String allowName = (String) dataSnapshot
                                 .child(userAllowanceArray.get(i) + "/name").getValue();
+                        String allowTotal = (String) dataSnapshot
+                                .child(userAllowanceArray.get(i) + "/total").getValue();
                         Log.d(TAG, "Allowance name is: " + allowName);
                         if (allowName == null) {
                             //TODO: display message.
                             Log.e(TAG, "Database is empty");
                             return;
                         }
-                        allowanceArray.add(allowName);
+                        TwoLineListItem allowTag = new TwoLineListItem(allowName, "$" + allowTotal);
+                        allowanceArray.add(allowTag);
 
 
                     }
-                    adapter.notifyDataSetChanged();
+                    mAdapter.notifyDataSetChanged();
                     Log.d(TAG, "Allowance is: " + allowanceArray);
 
 

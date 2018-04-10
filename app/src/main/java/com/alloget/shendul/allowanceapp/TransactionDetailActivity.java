@@ -18,6 +18,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.math.BigDecimal;
+
 public class TransactionDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "TransDetailActivity";
@@ -25,6 +27,8 @@ public class TransactionDetailActivity extends AppCompatActivity {
     EditText mTransactionAmount;
     TextView mTransactionCreatedBy;
     TextView mTransactionLastEditedBy;
+    String mAllowTotal = "";
+    BigDecimal previousAmount;
     private DatabaseReference mDatabase;
 
     @Override
@@ -47,9 +51,32 @@ public class TransactionDetailActivity extends AppCompatActivity {
         final String transID =  getIntent().getStringExtra("TRANSACTION_ID");
         final String userEmail =  getIntent().getStringExtra("EMAIL");
 
+        // Get the allowance total so that we can edit it.
+        DatabaseReference totalRef = database.getReference("allowances/" +
+                allowanceID + "/total");
+        totalRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String allowTotal = (String) dataSnapshot.getValue();
+                if (allowTotal == null) {
+                    //TODO: display message.
+                    Log.e(TAG, "Database is empty");
+                    return;
+                }
+                Log.d(TAG, "Total is: " + allowTotal);
+                mAllowTotal = allowTotal;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+
+        // grab all of the transaction information.
         DatabaseReference transRef = database.getReference("allowances/" +
                 allowanceID + "/transactions/" + transID);
-        // Read from the database
         transRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -70,6 +97,7 @@ public class TransactionDetailActivity extends AppCompatActivity {
                 Log.d(TAG, "Description is: " + desc);
                 Log.d(TAG, "Created by: " + createdBy);
                 Log.d(TAG, "Last edited by: " + lastEditedBy);
+                previousAmount = new BigDecimal(amount);
                 mTransactionAmount.setText(amount);
                 mTransactionDesc.setText(desc);
                 if (createdBy != null)
@@ -133,16 +161,32 @@ public class TransactionDetailActivity extends AppCompatActivity {
                 Log.d(TAG, mTransactionDesc.getText().toString());
                 Log.d(TAG, mTransactionAmount.getText().toString());
                 // edit a transaction in the Firebase database.
-
                 mDatabase = FirebaseDatabase.getInstance().getReference();
                 String desc = mTransactionDesc.getText().toString();
                 String amount = mTransactionAmount.getText().toString();
 
                 if (amount.equals("")) {
                     // show error message to user
-                } else if (desc.equals("Desc") || desc.equals("")) {
-                    // show error message to user.
                 } else {
+                    // check new amount against previous amount
+                    BigDecimal newTransAmount = new BigDecimal(mTransactionAmount.getText().toString());
+                    BigDecimal fTransAmount;
+                    BigDecimal newT = new BigDecimal(mAllowTotal); // initialize to old total.
+                    if (newTransAmount.compareTo(previousAmount) >= 1) { // new is greater than previous.
+                        Log.d(TAG, newTransAmount + " is greater than " + previousAmount);
+                        fTransAmount = newTransAmount.subtract(previousAmount);
+                        newT = newT.add(fTransAmount);
+                    } else if (newTransAmount.compareTo(previousAmount) < 0) { // new is less than previous.
+                        Log.d(TAG, newTransAmount + " is less than " + previousAmount);
+                        fTransAmount = previousAmount.subtract(newTransAmount);
+                        newT = newT.subtract(fTransAmount);
+                    }
+                    // update allowance total
+                    String newTotal = "" + newT;
+                    mDatabase.child("allowances")
+                            .child(allowanceID)
+                            .child("total")
+                            .setValue(newTotal);
                     // update last edited by.
                     mDatabase.child("allowances")
                             .child(allowanceID)

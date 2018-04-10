@@ -15,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -39,9 +38,9 @@ public class AllowanceDetailActivity extends AppCompatActivity {
     TextView mAllowanceBalance;
     private DatabaseReference mDatabase;
     ArrayList<String> transArray = new ArrayList<>();
-    ArrayList<String> transDescArray = new ArrayList<>();
+    ArrayList<TwoLineListItem> transDescArray = new ArrayList<>();
     ArrayList<String> usersToRemoveFromAllowanceArray = new ArrayList<>();
-    ArrayAdapter adapter;
+    private TwoItemListAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +58,9 @@ public class AllowanceDetailActivity extends AppCompatActivity {
         final String allowanceID =  getIntent().getStringExtra("ALLOWANCE_ID");
         mAllowanceName.setText(allowanceName);
 
-
-        adapter = new ArrayAdapter<>(this,
-                R.layout.allowance_listview, transDescArray);
+        mAdapter = new TwoItemListAdapter(this, transDescArray);
         ListView listView = findViewById(R.id.transactions_list);
-        listView.setAdapter(adapter);
+        listView.setAdapter(mAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg3) {
@@ -104,7 +101,8 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                         Log.e(TAG, "Database is empty");
                         return;
                     }
-                    transDescArray.add(transDesc);
+                    TwoLineListItem transTag = new TwoLineListItem(transDesc, "$" + transAmount);
+                    transDescArray.add(transTag);
                     BigDecimal bd = new BigDecimal(transAmount);
                     sum = sum.add(bd);
                 }
@@ -315,7 +313,8 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                         Log.e(TAG, "Database is empty");
                         return;
                     }
-                    transDescArray.add(transDesc);
+                    TwoLineListItem transTag = new TwoLineListItem(transDesc, "$" + transAmount);
+                    transDescArray.add(transTag);
                     BigDecimal bd = new BigDecimal(transAmount);
                     sum = sum.add(bd);
                 }
@@ -332,7 +331,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
-        adapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
     }
 
     private void startCreateTransactionActivity() {

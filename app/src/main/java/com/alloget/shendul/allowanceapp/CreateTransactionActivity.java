@@ -14,6 +14,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -26,6 +27,7 @@ public class CreateTransactionActivity extends AppCompatActivity {
     EditText mDescription;
     private DatabaseReference mDatabase;
     String mTransID = "";
+    String mAllowTotal = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,13 +50,11 @@ public class CreateTransactionActivity extends AppCompatActivity {
 
         mTransactionAmount.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(15,2)});
 
-        final String user = getIntent().getStringExtra("USER_ID");
         final String userEmail = getIntent().getStringExtra("EMAIL");
         final String allowanceID = getIntent().getStringExtra("ALLOWANCE_ID");
 
-        // grab all transactions from firebase and get their sum.
         DatabaseReference transRef = FirebaseDatabase.getInstance()
-                .getReference("allowances/" + allowanceID + "/nextTransID");
+                .getReference("allowances/" + allowanceID);
 
         // Read from the database
         transRef.addValueEventListener(new ValueEventListener() {
@@ -62,7 +62,8 @@ public class CreateTransactionActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                String id = (String) dataSnapshot.getValue();
+                String id = (String) dataSnapshot.child("nextTransID").getValue();
+                String allowTotal = (String) dataSnapshot.child("total").getValue();
                 if (id == null){
                     //TODO: display message.
                     Log.e(TAG, "no transactions found");
@@ -70,6 +71,7 @@ public class CreateTransactionActivity extends AppCompatActivity {
                 }
                 Log.d(TAG, "ID is: " + id);
                 mTransID = id;
+                mAllowTotal = allowTotal;
             }
 
             @Override
@@ -94,6 +96,17 @@ public class CreateTransactionActivity extends AppCompatActivity {
                 if (mTransactionAmount.getText().toString().equals("") || mTransID.isEmpty()) {
                     // show error message to user
                 } else if (desc.equals("")) {
+                    // update allowance total
+                    BigDecimal fAllowTotal = new BigDecimal(mAllowTotal);
+                    BigDecimal fTransAmount = new BigDecimal(mTransactionAmount.getText().toString());
+                    BigDecimal newT = new BigDecimal(0);
+                    newT = newT.add(fAllowTotal);
+                    newT = newT.add(fTransAmount);
+                    String newTotal = "" + newT;
+                    mDatabase.child("allowances")
+                            .child(allowanceID)
+                            .child("total")
+                            .setValue(newTotal); // TODO: Add a better formatting.
                     mDatabase.child("allowances")
                             .child(allowanceID)
                             .child("transactions")
@@ -121,6 +134,21 @@ public class CreateTransactionActivity extends AppCompatActivity {
                     // once the allowance is created, exit the activity.
                     finish();
                 } else {
+                    // update allowance total
+                    BigDecimal fAllowTotal = new BigDecimal(mAllowTotal);
+                    Log.d(TAG, "fAllowTotal = " + fAllowTotal);
+                    BigDecimal fTransAmount = new BigDecimal(mTransactionAmount.getText().toString());
+                    Log.d(TAG, "fTransTotal = " + fTransAmount);
+                    BigDecimal newT = new BigDecimal(0);
+                    newT = newT.add(fAllowTotal);
+                    newT = newT.add(fTransAmount);
+                    Log.d(TAG, "newT = " + newT);
+                    String newTotal = "" + newT;
+                    Log.d(TAG, "newTotal = " + newTotal);
+                    mDatabase.child("allowances")
+                            .child(allowanceID)
+                            .child("total")
+                            .setValue(newTotal); // TODO: Add a better formatting.
                     mDatabase.child("allowances")
                             .child(allowanceID)
                             .child("transactions")
