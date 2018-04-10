@@ -19,4 +19,6 @@
     <string name="allowance_leave_dialog_title">Leave Allowance?</string>
     <string name="allowance_leave_dialog_message">Are you sure you would like to leave this allowance?</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="add_transaction">Add Money</string>
+    <string name="sub_transaction">Subtract Money</string>
 </resources>

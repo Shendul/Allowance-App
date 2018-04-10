@@ -3,6 +3,7 @@ package com.alloget.shendul.allowanceapp;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +27,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+
+import io.github.yavski.fabspeeddial.FabSpeedDial;
+import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 // TODO: BUG_LIST:
 // 1. When transactions are edited this screen does not always update without a refresh. - think this has to do with the speed of writing to the database and then reading back.
@@ -144,11 +148,18 @@ public class AllowanceDetailActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FabSpeedDial fabSpeedDial = findViewById(R.id.fab_speed_dial);
+        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
-            public void onClick(View view) {
+            public boolean onPrepareMenu(NavigationMenu navigationMenu) {
+                return true;
+            }
+        });
+        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
+            @Override
+            public boolean onMenuItemSelected(MenuItem menuItem) {
                 startCreateTransactionActivity();
+                return false;
             }
         });
     }
