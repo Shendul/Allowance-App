@@ -145,7 +145,6 @@ public class AllowanceActivity extends AppCompatActivity {
                     String name = allowTag.getLeftLine();
                     Log.e(TAG, "Clicked" + name);
                     startAllowanceDetailActivity(name, position);
-
                 }
             });
 
@@ -188,10 +187,14 @@ public class AllowanceActivity extends AppCompatActivity {
                         String allowTotal = (String) dataSnapshot
                                 .child(userAllowanceArray.get(i) + "/total").getValue();
                         Log.d(TAG, "Allowance name is: " + allowName);
-                        if (allowName == null) {
+                        if (allowName == null || allowTotal == null) {
                             //TODO: display message.
                             Log.e(TAG, "Database is empty");
                             return;
+                        }
+                        int indexOfDec = allowTotal.indexOf('.');
+                        if (indexOfDec != -1){
+                            allowTotal = allowTotal.substring(0, indexOfDec);
                         }
                         TwoLineListItem allowTag = new TwoLineListItem(allowName, "$" + allowTotal);
                         allowanceArray.add(allowTag);

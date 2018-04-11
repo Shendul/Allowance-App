@@ -41,12 +41,13 @@ public class CreateTransactionActivity extends AppCompatActivity {
 
         // get current datetime.
         Date currentTime = Calendar.getInstance().getTime();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        /*DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         //to convert Date to String, use format method of SimpleDateFormat class.
-        final String strDate = dateFormat.format(currentTime);
-        Log.d(TAG, "Current time: " + strDate);
+        final String strDate = dateFormat.format(currentTime);*/
+        final long currentTimeMils = currentTime.getTime();
+        Log.d(TAG, "Current time: " + currentTimeMils);
 
-        mDescription.setText(strDate);
+        mDescription.setText("This field will be removed.");
 
         mTransactionAmount.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(15,2)});
 
@@ -124,7 +125,7 @@ public class CreateTransactionActivity extends AppCompatActivity {
                             .child("transactions")
                             .child(mTransID)
                             .child("desc")
-                            .setValue(strDate);
+                            .setValue(currentTimeMils);
                     mTransID = "k" + (Integer.parseInt(mTransID.substring(1)) + 1);
                     mDatabase.child("allowances")
                             .child(allowanceID)
@@ -166,7 +167,7 @@ public class CreateTransactionActivity extends AppCompatActivity {
                             .child("transactions")
                             .child(mTransID)
                             .child("desc")
-                            .setValue(desc);
+                            .setValue(currentTimeMils);
                     mTransID = "k" + (Integer.parseInt(mTransID.substring(1)) + 1);
                     mDatabase.child("allowances")
                             .child(allowanceID)

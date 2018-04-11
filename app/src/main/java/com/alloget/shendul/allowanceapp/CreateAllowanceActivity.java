@@ -114,15 +114,16 @@ public class CreateAllowanceActivity extends AppCompatActivity {
                             .setValue(mAllowanceAmount.getText().toString());
                     // get current datetime.
                     Date currentTime = Calendar.getInstance().getTime();
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    /*DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                     //to convert Date to String, use format method of SimpleDateFormat class.
-                    String strDate = dateFormat.format(currentTime);
-                    Log.d(TAG, "Current time: " + strDate);
+                    String strDate = dateFormat.format(currentTime);*/
+                    long currentTimeMils = currentTime.getTime();
+                    Log.d(TAG, "Current time: " + currentTimeMils);
                     mDatabase.child("allowances").child(allowID)
                             .child("transactions")
                             .child(zero)
                             .child("desc")
-                            .setValue(strDate); // default 1st transaction
+                            .setValue(currentTimeMils);
                     // create trans id tracker
                     mDatabase.child("allowances").child(allowID)
                             .child("nextTransID")
@@ -133,13 +134,11 @@ public class CreateAllowanceActivity extends AppCompatActivity {
                             .child("users")
                             .child(user)
                             .setValue("");
-
                     // increment allowID
                     allowID = "k" + (Integer.parseInt(allowID.substring(1)) + 1);
                     mDatabase.child("allowances")
                             .child("nextAllowID")
                             .setValue(allowID);
-
                     // once the allowance is created, exit the activity.
                     finish();
                 }

@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class TransactionDetailActivity extends AppCompatActivity {
 
@@ -80,7 +82,7 @@ public class TransactionDetailActivity extends AppCompatActivity {
         transRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String desc = (String) dataSnapshot.child("desc").getValue();
+                Long desc = (Long) dataSnapshot.child("desc").getValue();
                 String amount = (String) dataSnapshot.child("amount").getValue();
                 String createdBy = (String) dataSnapshot.child("createdBy").getValue();
                 if (createdBy != null && !createdBy.isEmpty())
@@ -88,7 +90,7 @@ public class TransactionDetailActivity extends AppCompatActivity {
                 String lastEditedBy = (String) dataSnapshot.child("lastEditedBy").getValue();
                 if (lastEditedBy != null && !lastEditedBy.isEmpty())
                     lastEditedBy = FirebaseEncodingAndDecoding.decodeFromFirebaseKey(lastEditedBy);
-                if (desc == null || amount == null) {
+                if (amount == null) {
                     //TODO: display message.
                     Log.e(TAG, "Database is empty");
                     return;
@@ -99,7 +101,9 @@ public class TransactionDetailActivity extends AppCompatActivity {
                 Log.d(TAG, "Last edited by: " + lastEditedBy);
                 previousAmount = new BigDecimal(amount);
                 mTransactionAmount.setText(amount);
-                mTransactionDesc.setText(desc);
+                // Convert long into timeAgo
+                CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(desc, new Date().getTime(), DateUtils.MINUTE_IN_MILLIS);
+                mTransactionDesc.setText(timeAgo);
                 if (createdBy != null)
                     mTransactionCreatedBy.setText("Created by: " + createdBy);
                 if(lastEditedBy != null)
@@ -138,6 +142,16 @@ public class TransactionDetailActivity extends AppCompatActivity {
                                 .child("transactions")
                                 .child(transID)
                                 .removeValue();
+                        // reduce allowance total by trans amount
+                        BigDecimal transAmount = new BigDecimal(mTransactionAmount.getText().toString());
+                        BigDecimal allowTotal = new BigDecimal(mAllowTotal);
+                        BigDecimal newT = allowTotal.subtract(transAmount);
+                        Log.d(TAG, "newT = " + newT);
+                        String newTotal = "" + newT;
+                        mDatabase.child("allowances")
+                                .child(allowanceID)
+                                .child("total")
+                                .setValue(newTotal);
 
                         // once the transaction has been deleted, exit the activity.
                         finish();
@@ -162,7 +176,6 @@ public class TransactionDetailActivity extends AppCompatActivity {
                 Log.d(TAG, mTransactionAmount.getText().toString());
                 // edit a transaction in the Firebase database.
                 mDatabase = FirebaseDatabase.getInstance().getReference();
-                String desc = mTransactionDesc.getText().toString();
                 String amount = mTransactionAmount.getText().toString();
 
                 if (amount.equals("")) {
@@ -201,13 +214,6 @@ public class TransactionDetailActivity extends AppCompatActivity {
                             .child(transID)
                             .child("amount")
                             .setValue(amount);
-                    // update transaction description.
-                    mDatabase.child("allowances")
-                            .child(allowanceID)
-                            .child("transactions")
-                            .child(transID)
-                            .child("desc")
-                            .setValue(desc);
 
                     // once the transaction has been edited, exit the activity.
                     finish();

@@ -3,27 +3,30 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingTop="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="fill_parent"
-        android:padding="10dp"
-        android:textSize="19dp"
+        android:layout_weight="0.70"
+        android:clickable="false"
         android:focusable="false"
-        android:clickable="false">
-    </TextView>
+        android:textColor="@color/common_google_signin_btn_text_light_pressed"
+        android:textSize="24sp"></TextView>
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/amount"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="fill_parent"
-        android:layout_alignParentRight="true"
+        android:gravity="right|center_vertical"
+        android:layout_weight="0.30"
         android:clickable="false"
         android:focusable="false"
-        android:padding="10dp"
         android:textColor="@color/colorPrimary"
-        android:textSize="20dp"></TextView>
+        android:textSize="24sp"></TextView>
 
 </LinearLayout>

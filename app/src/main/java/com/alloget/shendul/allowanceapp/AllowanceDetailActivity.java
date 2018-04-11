@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
@@ -94,7 +96,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                 transArray.addAll(value.keySet());
                 Log.d(TAG, "Value is: " + value);
                 for (int i = 0; i <  transArray.size(); i++) {
-                    String transDesc = (String) dataSnapshot
+                    Long transDesc = (Long) dataSnapshot
                             .child(transArray.get(i) + "/desc").getValue();
                     String transAmount = (String) dataSnapshot
                             .child( transArray.get(i) + "/amount").getValue();
@@ -105,7 +107,9 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                         Log.e(TAG, "Database is empty");
                         return;
                     }
-                    TwoLineListItem transTag = new TwoLineListItem(transDesc, "$" + transAmount);
+                    // Convert long into timeAgo
+                    String timeAgo = (String) DateUtils.getRelativeTimeSpanString(transDesc, new Date().getTime(), DateUtils.MINUTE_IN_MILLIS);
+                    TwoLineListItem transTag = new TwoLineListItem(timeAgo, "$" + transAmount);
                     transDescArray.add(transTag);
                     BigDecimal bd = new BigDecimal(transAmount);
                     sum = sum.add(bd);
@@ -313,7 +317,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                 transArray.addAll(value.keySet());
                 Log.d(TAG, "Value is: " + value);
                 for (int i = 0; i <  transArray.size(); i++) {
-                    String transDesc = (String) dataSnapshot
+                    Long transDesc = (Long) dataSnapshot
                             .child(transArray.get(i) + "/desc").getValue();
                     String transAmount = (String) dataSnapshot
                             .child( transArray.get(i) + "/amount").getValue();
@@ -324,7 +328,9 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                         Log.e(TAG, "Database is empty");
                         return;
                     }
-                    TwoLineListItem transTag = new TwoLineListItem(transDesc, "$" + transAmount);
+                    // Convert long into timeAgo
+                    String timeAgo = (String)DateUtils.getRelativeTimeSpanString(transDesc, new Date().getTime(), DateUtils.MINUTE_IN_MILLIS);
+                    TwoLineListItem transTag = new TwoLineListItem(timeAgo, "$" + transAmount);
                     transDescArray.add(transTag);
                     BigDecimal bd = new BigDecimal(transAmount);
                     sum = sum.add(bd);
