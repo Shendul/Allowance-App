@@ -46,9 +46,9 @@
             android:layout_gravity="bottom|end"
             app:fabGravity="bottom_end"
             app:fabMenu="@menu/fab_speed_dial_menu"
-            app:miniFabBackgroundTint="@android:color/white"
-            app:miniFabDrawableTint="?attr/colorPrimaryDark"
-            app:miniFabTitleTextColor="?attr/colorPrimaryDark" />
+            app:miniFabBackgroundTintList="@array/fab_menu_item_colors"
+            app:miniFabDrawableTint="@android:color/white"
+            app:miniFabTitleTextColor="@android:color/black" />
 
     </FrameLayout>
 

@@ -24,7 +24,6 @@ public class CreateTransactionActivity extends AppCompatActivity {
 
     private static final String TAG = "CreateTransActivity";
     EditText mTransactionAmount;
-    EditText mDescription;
     private DatabaseReference mDatabase;
     String mTransID = "";
     String mAllowTotal = "";
@@ -37,17 +36,11 @@ public class CreateTransactionActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mTransactionAmount = findViewById(R.id.amountText);
-        mDescription = findViewById(R.id.descText);
 
         // get current datetime.
         Date currentTime = Calendar.getInstance().getTime();
-        /*DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        //to convert Date to String, use format method of SimpleDateFormat class.
-        final String strDate = dateFormat.format(currentTime);*/
         final long currentTimeMils = currentTime.getTime();
         Log.d(TAG, "Current time: " + currentTimeMils);
-
-        mDescription.setText("This field will be removed.");
 
         mTransactionAmount.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(15,2)});
 
@@ -87,93 +80,58 @@ public class CreateTransactionActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d(TAG, "Clicked Create Transaction button");
                 Log.d(TAG, "Amount = " + mTransactionAmount.getText().toString());
-                Log.d(TAG, "Description is: " + mDescription.getText().toString());
 
                 // create a transaction in the Firebase database
-
                 mDatabase = FirebaseDatabase.getInstance().getReference();
-                String desc = mDescription.getText().toString();
 
                 if (mTransactionAmount.getText().toString().equals("") || mTransID.isEmpty()) {
                     // show error message to user
-                } else if (desc.equals("")) {
-                    // update allowance total
-                    BigDecimal fAllowTotal = new BigDecimal(mAllowTotal);
-                    BigDecimal fTransAmount = new BigDecimal(mTransactionAmount.getText().toString());
-                    BigDecimal newT = new BigDecimal(0);
-                    newT = newT.add(fAllowTotal);
-                    newT = newT.add(fTransAmount);
-                    String newTotal = "" + newT;
-                    mDatabase.child("allowances")
-                            .child(allowanceID)
-                            .child("total")
-                            .setValue(newTotal); // TODO: Add a better formatting.
-                    mDatabase.child("allowances")
-                            .child(allowanceID)
-                            .child("transactions")
-                            .child(mTransID)
-                            .child("createdBy")
-                            .setValue(userEmail);
-                    mDatabase.child("allowances")
-                            .child(allowanceID)
-                            .child("transactions")
-                            .child(mTransID)
-                            .child("amount")
-                            .setValue(mTransactionAmount.getText().toString());
-                    mDatabase.child("allowances")
-                            .child(allowanceID)
-                            .child("transactions")
-                            .child(mTransID)
-                            .child("desc")
-                            .setValue(currentTimeMils);
-                    mTransID = "k" + (Integer.parseInt(mTransID.substring(1)) + 1);
-                    mDatabase.child("allowances")
-                            .child(allowanceID)
-                            .child("nextTransID")
-                            .setValue(mTransID);
-
-                    // once the allowance is created, exit the activity.
-                    finish();
                 } else {
+                    // Add a minus sign to the front of mTAmount if subtract Money button was pushed.
+                    String mTAmount;
+                    if (getIntent().getBooleanExtra("IS_ADD", false)){
+                        mTAmount = mTransactionAmount.getText().toString();
+                    } else {
+                        mTAmount = "-" + mTransactionAmount.getText().toString();
+                    }
                     // update allowance total
                     BigDecimal fAllowTotal = new BigDecimal(mAllowTotal);
-                    Log.d(TAG, "fAllowTotal = " + fAllowTotal);
-                    BigDecimal fTransAmount = new BigDecimal(mTransactionAmount.getText().toString());
-                    Log.d(TAG, "fTransTotal = " + fTransAmount);
+                    BigDecimal fTransAmount = new BigDecimal(mTAmount);
                     BigDecimal newT = new BigDecimal(0);
                     newT = newT.add(fAllowTotal);
                     newT = newT.add(fTransAmount);
-                    Log.d(TAG, "newT = " + newT);
                     String newTotal = "" + newT;
-                    Log.d(TAG, "newTotal = " + newTotal);
                     mDatabase.child("allowances")
                             .child(allowanceID)
                             .child("total")
                             .setValue(newTotal); // TODO: Add a better formatting.
+                    // init who created transaction.
                     mDatabase.child("allowances")
                             .child(allowanceID)
                             .child("transactions")
                             .child(mTransID)
                             .child("createdBy")
                             .setValue(userEmail);
+                    // set the transaction amount.
                     mDatabase.child("allowances")
                             .child(allowanceID)
                             .child("transactions")
                             .child(mTransID)
                             .child("amount")
-                            .setValue(mTransactionAmount.getText().toString());
+                            .setValue(mTAmount);
+                    // set desc as current time in milliseconds.
                     mDatabase.child("allowances")
                             .child(allowanceID)
                             .child("transactions")
                             .child(mTransID)
                             .child("desc")
                             .setValue(currentTimeMils);
+                    // set up transaction id.
                     mTransID = "k" + (Integer.parseInt(mTransID.substring(1)) + 1);
                     mDatabase.child("allowances")
                             .child(allowanceID)
                             .child("nextTransID")
                             .setValue(mTransID);
-
                     // once the allowance is created, exit the activity.
                     finish();
                 }

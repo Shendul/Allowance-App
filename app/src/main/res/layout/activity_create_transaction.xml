@@ -23,25 +23,14 @@
     <include
         android:id="@+id/include"
         layout="@layout/content_create_allowance"
-        android:layout_height="508dp"
         tools:layout_editor_absoluteY="59dp" />
-
-    <EditText
-        android:id="@+id/descText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="130dp"
-        android:ems="10"
-        android:hint="Description of Transaction"
-        android:inputType="textPersonName"
-        android:textAlignment="center" />
 
     <EditText
         android:id="@+id/amountText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="100dp"
         android:ems="10"
         android:inputType="numberSigned|numberDecimal" />
 
@@ -49,7 +38,7 @@
         android:id="@+id/dollarSign"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="210dp"
+        android:layout_marginTop="110dp"
         android:layout_marginLeft="5dp"
         android:text="$"
         android:textAppearance="@android:style/TextAppearance.Medium" />
@@ -59,8 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Create Transaction"
-        app:layout_anchor="@+id/include"
-        app:layout_anchorGravity="left|center" />
+        android:layout_marginTop="150dp" />
 
     <include layout="@layout/content_create_transaction" />
 

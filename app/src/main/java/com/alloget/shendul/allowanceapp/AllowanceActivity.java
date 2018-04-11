@@ -134,7 +134,7 @@ public class AllowanceActivity extends AppCompatActivity {
 
             final FirebaseDatabase database = FirebaseDatabase.getInstance(); // initialize Firebase reference.
 
-            mAdapter = new TwoItemListAdapter(this, allowanceArray);
+            mAdapter = new TwoItemListAdapter(this, allowanceArray, true);
 
             ListView listView = findViewById(R.id.allowance_list);
             listView.setAdapter(mAdapter);
@@ -196,7 +196,7 @@ public class AllowanceActivity extends AppCompatActivity {
                         if (indexOfDec != -1){
                             allowTotal = allowTotal.substring(0, indexOfDec);
                         }
-                        TwoLineListItem allowTag = new TwoLineListItem(allowName, "$" + allowTotal);
+                        TwoLineListItem allowTag = new TwoLineListItem(allowName, allowTotal);
                         allowanceArray.add(allowTag);
 
 

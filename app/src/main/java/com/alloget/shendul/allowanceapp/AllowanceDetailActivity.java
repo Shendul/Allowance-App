@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.internal.NavigationMenu;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -35,7 +33,8 @@ import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 // TODO: BUG_LIST:
 // 1. When transactions are edited this screen does not always update without a refresh. - think this has to do with the speed of writing to the database and then reading back.
-// 2. First time clicking an allowance seems to not populate the transaction list. #POSSIBLY SQUASHED, REQ MORE TESTING
+// 2. First time clicking an allowance seems to not populate the transaction list. #POSSIBLY SQUASHED, REQ MORE TESTING.
+// 3. When deleting transactions the colors can get fudged up.
 
 public class AllowanceDetailActivity extends AppCompatActivity {
 
@@ -64,7 +63,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
         final String allowanceID =  getIntent().getStringExtra("ALLOWANCE_ID");
         mAllowanceName.setText(allowanceName);
 
-        mAdapter = new TwoItemListAdapter(this, transDescArray);
+        mAdapter = new TwoItemListAdapter(this, transDescArray, false);
         ListView listView = findViewById(R.id.transactions_list);
         listView.setAdapter(mAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -162,7 +161,13 @@ public class AllowanceDetailActivity extends AppCompatActivity {
         fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
-                startCreateTransactionActivity();
+                if(menuItem.getTitle().equals("Add Money")){
+                    startCreateTransactionActivity(true);
+                    Log.d(TAG, "Clicked add money!");
+                } else {
+                    startCreateTransactionActivity(false);
+                    Log.d(TAG, "Clicked subtract money!");
+                }
                 return false;
             }
         });
@@ -328,9 +333,10 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                         Log.e(TAG, "Database is empty");
                         return;
                     }
-                    // Convert long into timeAgo
-                    String timeAgo = (String)DateUtils.getRelativeTimeSpanString(transDesc, new Date().getTime(), DateUtils.MINUTE_IN_MILLIS);
-                    TwoLineListItem transTag = new TwoLineListItem(timeAgo, "$" + transAmount);
+                    // Convert long into timeAgo.
+                    String timeAgo = (String)DateUtils.getRelativeTimeSpanString(transDesc,
+                            new Date().getTime(), DateUtils.MINUTE_IN_MILLIS);
+                    TwoLineListItem transTag = new TwoLineListItem(timeAgo, transAmount);
                     transDescArray.add(transTag);
                     BigDecimal bd = new BigDecimal(transAmount);
                     sum = sum.add(bd);
@@ -351,12 +357,13 @@ public class AllowanceDetailActivity extends AppCompatActivity {
         mAdapter.notifyDataSetChanged();
     }
 
-    private void startCreateTransactionActivity() {
+    private void startCreateTransactionActivity(boolean isAdd) {
         Intent intent = new Intent(this, CreateTransactionActivity.class);
         intent.putExtra("USER_ID", getIntent().getStringExtra("USER_ID"));
         intent.putExtra("EMAIL", getIntent().getStringExtra("EMAIL"));
         intent.putExtra("ALLOWANCE_NAME",getIntent().getStringExtra("ALLOWANCE_NAME"));
         intent.putExtra("ALLOWANCE_ID",getIntent().getStringExtra("ALLOWANCE_ID"));
+        intent.putExtra("IS_ADD", isAdd);
         startActivity(intent);
     }
 

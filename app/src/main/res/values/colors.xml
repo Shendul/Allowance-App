@@ -4,4 +4,10 @@
     <color name="colorPrimaryDark">#00701a</color>
     <color name="colorAccent">#ff9800</color>
     <color name="transparent">#00ffffff</color>
+    <integer-array name="fab_menu_item_colors">
+        <!-- A light Holo shade of green -->
+        <item>@android:color/holo_green_light</item>
+        <!-- A dark Holo shade of red -->
+        <item>@android:color/holo_red_dark</item>
+    </integer-array>
 </resources>
