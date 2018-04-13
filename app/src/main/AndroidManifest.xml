@@ -26,7 +26,8 @@
             android:configChanges="orientation"
             android:label="@string/title_activity_create_allowance"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysVisible"/>
         <activity
             android:name=".AllowanceDetailActivity"
             android:configChanges="orientation"
@@ -38,7 +39,8 @@
             android:configChanges="orientation"
             android:label="@string/title_activity_create_transaction"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysVisible"/>
         <activity
             android:name=".TransactionDetailActivity"
             android:configChanges="orientation"

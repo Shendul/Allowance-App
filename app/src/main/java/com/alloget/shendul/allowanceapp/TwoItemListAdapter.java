@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.util.TypedValue;
 import android.widget.ArrayAdapter;
 import android.content.Context;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -52,10 +51,11 @@ public class TwoItemListAdapter extends ArrayAdapter<TwoLineListItem> {
             String amount = currentAllow.getRightLine();
             if (amount.charAt(0) == '-'){
                 amount = "-$" + amount.substring(1);
-                // change font to red.s
+                // Change font to red.
                 amountTV.setTextColor(Color.parseColor("#f44336"));
             } else {
                 amount = "$" + amount;
+                amountTV.setTextColor(Color.parseColor("#43a047"));
             }
             nameTV.setText(currentAllow.getLeftLine());
             amountTV.setText(amount);

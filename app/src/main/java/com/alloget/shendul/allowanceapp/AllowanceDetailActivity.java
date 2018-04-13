@@ -16,25 +16,37 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 // TODO: BUG_LIST:
-// 1. When transactions are edited this screen does not always update without a refresh. - think this has to do with the speed of writing to the database and then reading back.
-// 2. First time clicking an allowance seems to not populate the transaction list. #POSSIBLY SQUASHED, REQ MORE TESTING.
-// 3. When deleting transactions the colors can get fudged up.
+// 1. First time clicking an allowance seems to not populate the transaction list. #POSSIBLY SQUASHED, REQ MORE TESTING.
+
+class TransactionListItem {
+    public TwoLineListItem twoLineListItem;
+    public long timeInMilliseconds;
+    public String key;
+
+    public TransactionListItem(TwoLineListItem twoLineListItem, long timeInMilliseconds, String key){
+        this.twoLineListItem = twoLineListItem;
+        this.timeInMilliseconds = timeInMilliseconds;
+        this.key = key;
+    }
+}
 
 public class AllowanceDetailActivity extends AppCompatActivity {
 
@@ -44,6 +56,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     ArrayList<String> transArray = new ArrayList<>();
     ArrayList<TwoLineListItem> transDescArray = new ArrayList<>();
+    HashMap<String,TransactionListItem> transactionListItemHashmap = new HashMap<>();
     ArrayList<String> usersToRemoveFromAllowanceArray = new ArrayList<>();
     private TwoItemListAdapter mAdapter;
 
@@ -76,56 +89,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
             }
         });
 
-        // grab all transactions from firebase and get their sum.
-        DatabaseReference transRef = database.getReference("allowances/" +
-                allowanceID + "/transactions");
-
-        transRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                BigDecimal sum = new BigDecimal(0);
-                HashMap<String, String> value = (HashMap<String, String>) dataSnapshot.getValue();
-                transDescArray.clear();
-                transArray.clear();
-                if (value == null) {
-                    //TODO: display message.
-                    Log.e(TAG, "Database is empty");
-                    return;
-                }
-                transArray.addAll(value.keySet());
-                Log.d(TAG, "Value is: " + value);
-                for (int i = 0; i <  transArray.size(); i++) {
-                    Long transDesc = (Long) dataSnapshot
-                            .child(transArray.get(i) + "/desc").getValue();
-                    String transAmount = (String) dataSnapshot
-                            .child( transArray.get(i) + "/amount").getValue();
-                    Log.d(TAG, "Transaction amount is: " +  transAmount);
-                    Log.d(TAG, "Transaction desc is: " +  transDesc);
-                    if ( transAmount == null || transDesc == null) {
-                        //TODO: display message.
-                        Log.e(TAG, "Database is empty");
-                        return;
-                    }
-                    // Convert long into timeAgo
-                    String timeAgo = (String) DateUtils.getRelativeTimeSpanString(transDesc, new Date().getTime(), DateUtils.MINUTE_IN_MILLIS);
-                    TwoLineListItem transTag = new TwoLineListItem(timeAgo, "$" + transAmount);
-                    transDescArray.add(transTag);
-                    BigDecimal bd = new BigDecimal(transAmount);
-                    sum = sum.add(bd);
-                }
-                // reverse arrays so that most recent transactions are shown on top.
-                Collections.reverse(transDescArray);
-                Collections.reverse(transArray);
-                Log.d(TAG, "Sum is: " + sum);
-                mAllowanceBalance.setText("$" + sum);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
+        QueryForTransactionData(database, allowanceID);
 
         DatabaseReference allowanceUsersRef = database.getReference("allowances/" +
                 allowanceID + "/users");
@@ -141,7 +105,7 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                     return;
                 }
                 usersToRemoveFromAllowanceArray.addAll(usersToRemove.keySet());
-                Log.d(TAG, "UsersToRemove is: " + usersToRemove);
+                Log.d(TAG, "onCreate UsersToRemove is: " + usersToRemove);
             }
 
             @Override
@@ -213,7 +177,6 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                                     .child(allowanceID)
                                     .removeValue();
                         }
-
                         // once the allowance has been deleted, exit the activity.
                         finish();
                     }
@@ -278,8 +241,6 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                                 Log.w(TAG, "Failed to read value.", error.toException());
                             }
                         });
-
-
                         // once the allowance has been left, exit the activity.
                         finish();
                     }
@@ -303,49 +264,23 @@ public class AllowanceDetailActivity extends AppCompatActivity {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final String allowanceID =  getIntent().getStringExtra("ALLOWANCE_ID");
 
-        // grab all transactions from firebase and get their sum.
-        DatabaseReference transRef = database.getReference("allowances/" +
-                allowanceID + "/transactions");
+        QueryForTransactionData(database, allowanceID);
+    }
 
-        transRef.addValueEventListener(new ValueEventListener() {
+    private void QueryForTransactionData(FirebaseDatabase database, String allowanceID) {
+        // get allowance total.
+        DatabaseReference allowTotalRef = database.getReference("allowances/" +
+                allowanceID + "/total");
+        allowTotalRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                BigDecimal sum = new BigDecimal(0);
-                HashMap<String, String> value = (HashMap<String, String>) dataSnapshot.getValue();
-                transDescArray.clear();
-                transArray.clear();
+                String value = (String) dataSnapshot.getValue();
                 if (value == null) {
                     //TODO: display message.
                     Log.e(TAG, "Database is empty");
                     return;
                 }
-                transArray.addAll(value.keySet());
-                Log.d(TAG, "Value is: " + value);
-                for (int i = 0; i <  transArray.size(); i++) {
-                    Long transDesc = (Long) dataSnapshot
-                            .child(transArray.get(i) + "/desc").getValue();
-                    String transAmount = (String) dataSnapshot
-                            .child( transArray.get(i) + "/amount").getValue();
-                    Log.d(TAG, "Transaction amount is: " +  transAmount);
-                    Log.d(TAG, "Transaction desc is: " +  transDesc);
-                    if ( transAmount == null || transDesc == null) {
-                        //TODO: display message.
-                        Log.e(TAG, "Database is empty");
-                        return;
-                    }
-                    // Convert long into timeAgo.
-                    String timeAgo = (String)DateUtils.getRelativeTimeSpanString(transDesc,
-                            new Date().getTime(), DateUtils.MINUTE_IN_MILLIS);
-                    TwoLineListItem transTag = new TwoLineListItem(timeAgo, transAmount);
-                    transDescArray.add(transTag);
-                    BigDecimal bd = new BigDecimal(transAmount);
-                    sum = sum.add(bd);
-                }
-                // reverse arrays so that most recent transactions are shown on top.
-                Collections.reverse(transDescArray);
-                Collections.reverse(transArray);
-                Log.d(TAG, "Sum is: " + sum);
-                mAllowanceBalance.setText("$" + sum);
+                mAllowanceBalance.setText(value);
             }
 
             @Override
@@ -354,7 +289,89 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
+
+        // grab all transactions from firebase.
+        DatabaseReference transRef = database.getReference("allowances/" +
+                allowanceID + "/transactions");
+
+
+        transRef.orderByKey().limitToLast(20).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
+
+                Log.d(TAG, "onCreate onChildAdded key is: " + dataSnapshot.getKey());
+                updateTransList(dataSnapshot);
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onCreate onChildRemoved key is: " + dataSnapshot.getKey());
+                updateTransList(dataSnapshot);
+                transactionListItemHashmap.remove(dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
+                Log.d(TAG, "onCreate onChildChanged key is: " + dataSnapshot.getKey());
+                updateTransList(dataSnapshot);
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String prevChildKey) {
+                Log.d(TAG, "onCreate onChildMoved key is: " + dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+    }
+
+    private void updateTransList(DataSnapshot dataSnapshot){
+        transDescArray.clear();
+        transArray.clear();
+        Long transDesc = (Long) dataSnapshot
+                .child("desc").getValue();
+        String transAmount = (String) dataSnapshot
+                .child("amount").getValue();
+        if (transDesc == null) {
+            //TODO: display message.
+            Log.e(TAG, "Database is empty");
+            return;
+        }
+        // Convert long into timeAgo
+        String timeAgo = (String) DateUtils.getRelativeTimeSpanString(transDesc, new Date().getTime(), DateUtils.MINUTE_IN_MILLIS);
+        TwoLineListItem transTag = new TwoLineListItem(timeAgo, transAmount);
+        Log.d(TAG, "Added/updated tag for: " + dataSnapshot.getKey());
+        TransactionListItem transactionItem = new TransactionListItem(transTag,transDesc, dataSnapshot.getKey());
+        transactionListItemHashmap.put(dataSnapshot.getKey(), transactionItem);
+        final List<TransactionListItem> sortedTransactionListItems = new ArrayList<>();
+        for (String key: transactionListItemHashmap.keySet()) {
+            sortedTransactionListItems.add(transactionListItemHashmap.get(key));
+        }
+
+        Collections.sort(sortedTransactionListItems, new Comparator<TransactionListItem>() {
+            @Override
+            public int compare(TransactionListItem o1, TransactionListItem o2) {
+                return Long.compare(o1.timeInMilliseconds, o2.timeInMilliseconds);
+            }
+        });
+        Collections.reverse(sortedTransactionListItems);
+        for (TransactionListItem item : sortedTransactionListItems) {
+            Log.d(TAG, "Sorted Transaction list item = " + item.timeInMilliseconds);
+            transArray.add(item.key);
+            transDescArray.add(item.twoLineListItem);
+        }
+
+        for (TwoLineListItem item : transDescArray){
+            Log.d(TAG, "Item Left = " + item.getLeftLine());
+            Log.d(TAG, "Item Right = " + item.getRightLine());
+        }
+
         mAdapter.notifyDataSetChanged();
+
     }
 
     private void startCreateTransactionActivity(boolean isAdd) {
@@ -380,5 +397,4 @@ public class AllowanceDetailActivity extends AppCompatActivity {
         intent.putExtra("ALLOWANCE_ID",getIntent().getStringExtra("ALLOWANCE_ID"));
         startActivity(intent);
     }
-
 }
