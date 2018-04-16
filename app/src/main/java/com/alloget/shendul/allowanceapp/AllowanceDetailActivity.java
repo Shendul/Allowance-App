@@ -280,6 +280,11 @@ public class AllowanceDetailActivity extends AppCompatActivity {
                     Log.e(TAG, "Database is empty");
                     return;
                 }
+                if (value.charAt(0) == '-'){
+                    value = "-$" + value.substring(1);
+                } else {
+                    value = "$" + value;
+                }
                 mAllowanceBalance.setText(value);
             }
 

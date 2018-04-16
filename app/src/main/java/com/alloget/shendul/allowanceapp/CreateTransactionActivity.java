@@ -7,6 +7,7 @@ import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -14,7 +15,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLDecoder;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -22,6 +25,7 @@ public class CreateTransactionActivity extends AppCompatActivity {
 
     private static final String TAG = "CreateTransActivity";
     EditText mTransactionAmount;
+    TextView mSign;
     private DatabaseReference mDatabase;
     String mTransID = "";
     String mAllowTotal = "";
@@ -34,6 +38,11 @@ public class CreateTransactionActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mTransactionAmount = findViewById(R.id.amountText);
+        mSign = findViewById(R.id.dollarSign);
+
+        if (!getIntent().getBooleanExtra("IS_ADD", false)){
+            mSign.setText("-$");
+        }
 
         // get current datetime.
         Date currentTime = Calendar.getInstance().getTime();
@@ -42,7 +51,13 @@ public class CreateTransactionActivity extends AppCompatActivity {
 
         mTransactionAmount.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(15,2)});
 
-        final String userEmail = getIntent().getStringExtra("EMAIL");
+        String unencodedUserEmail = getIntent().getStringExtra("EMAIL");
+        try {
+            unencodedUserEmail = URLDecoder.decode(unencodedUserEmail, "UTF-8");
+        } catch (UnsupportedEncodingException exception) {
+            Log.e(TAG, "unsupportedEncodingException thrown and not handled");
+        }
+        final String userEmail = unencodedUserEmail;
         final String allowanceID = getIntent().getStringExtra("ALLOWANCE_ID");
 
         DatabaseReference transRef = FirebaseDatabase.getInstance()
